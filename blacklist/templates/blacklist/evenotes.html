@@ -1,0 +1,242 @@
+{% extends 'toolbox/base.html' %}
+{% load i18n %}
+{% load humanize %}
+{% block tb_block %}
+</br>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="pull-left"><H4 class="text-center">Pilot Log</H4></div>
+        <div class="pull-right">
+            {% if add_note %}<a class="btn btn-success modal-add-new" type="button" title="Add New">Add New</a>{% endif %}
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<div class="tab-content">
+    <div class="tab-pane active" id="all-notes">
+        {% if notes %}
+        <div class="container col-xs-12">
+            <H4 class="text-center">All Notes</H4>
+            <table class="table table-striped" width="100%" id="notes-table">
+                    <thead>
+                        <th class="text-center"></th>
+                        <th class="text-center">Name</th>
+                        <th class="text-center">Date Added</th>
+                        <th class="text-center">Added By</th>
+                        <th>Reason</th>
+                        <th>Added By</th>
+                        <th>Category</th>
+                        <th>Corporation</th>
+                        <th>Alliance</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                    {% for note in notes %}
+
+                        <tr>
+                            <td class="text-center" style="vertical-align:middle;">{% evename_img note.eve_id note.eve_name note.eve_catagory 64  %}</td>
+                            <td class="text-center" style="vertical-align:middle;"><p>{{ note.eve_name }}
+                                {% if note.eve_catagory == 'character' %}<br><span class="label label-default">{{ note.corporation_name }}</span></br><span class="label label-default">{{ note.alliance_name }}</span>{% endif %}</p>{% if note.blacklisted %}<span class="label label-danger">BLACKLISTED</span>{% endif %}{% if note.restricted %}<span class="label label-warning">RESTRICTED</span>{% endif %}</td>
+                            <td class="text-center" style="vertical-align:middle;"><p>{{ note.added_at|date:"Y-m-d H:i"}}</p><p>{{ note.added_at|naturaltime }}</p></td>
+                            <td class="text-center" style="vertical-align:middle;"><p>{{ note.added_by }}</p></td>
+                            <td style="vertical-align:middle;"><p style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ note.reason }}</p></td>
+
+                            <!-- for filtering -->
+                            <td class="text-center" style="vertical-align:middle;">{{ note.added_by }}</td>
+                            <td class="text-center" style="vertical-align:middle;">{{ note.eve_catagory }}</td>
+                            <td class="text-center" style="vertical-align:middle;">{{ note.corporation_name }}</td>
+                            <td class="text-center" style="vertical-align:middle;">{{ note.alliance_name }}</td>
+                            <td class="text-center" style="vertical-align:middle;">
+                                <div class="text-center">
+                                    {% if view_comment or add_comment %}
+                                            <a  type="button" class="btn btn-primary fa fa-comments modal-comments-button" id="{{ note.id }}"  title="Comments for: {{note.eve_name}}"></a>
+                                    {% endif %}
+                                    {% if edit_note %}
+                                    <a class="btn btn-info fa fa-edit modal-edit-button" id="{{ note.id }}" type="button" title="Edit: {{note.eve_name}}">
+                                    </a>{% endif %}
+                                    {% if add_comment %}
+                                    <a class="btn btn-primary fa fa-comment modal-add-comment-button" type="button" id="{{ note.id }}" title="Add Comment for: {{note.eve_name}}">
+                                    </a>{% endif %}
+                                </div>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-warning text-center">{% trans "No notes have been added!" %}</div>
+        {% endif %}
+    </div>
+</div>
+<div class="modal fade" id="modal-main" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title pull-left" id="main-modal-title"></h5>
+            </div>
+            <div id="main-modal-body" class="modal-body"  style="overflow-y:auto;"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block extra_javascript %}
+    {% include 'bundles/datatables-js.html' %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+	<script>!function(t){function e(t){var e={columns:[],columnsIdxList:[],bootstrap:!1,autoSize:!0,label:"Filter "};if("bootstrap"in t&&"boolean"==typeof t.bootstrap&&(e.bootstrap=t.bootstrap),"autoSize"in t&&"boolean"==typeof t.autoSize&&(e.autoSize=t.autoSize),"label"in t&&"string"==typeof t.label&&(e.label=t.label),"columns"in t)for(var i=0;i<t.columns.length;i++){var n=t.columns[i];if("idx"in n&&"number"==typeof n.idx){var o=n.idx;e.columns[o]={title:null,maxWidth:null,autoSize:!0},e.columnsIdxList.push(o),"title"in n&&"string"==typeof n.title&&(e.columns[o].title=n.title),"maxWidth"in n&&"string"==typeof n.maxWidth&&(e.columns[o].maxWidth=n.maxWidth),"autoSize"in n&&"boolean"==typeof n.autoSize&&(e.columns[o].autoSize=n.autoSize)}}return e}t(document).on("preInit.dt",function(i,n){if("dt"===i.namespace){var o=new t.fn.dataTable.Api(n),a=o.table().node().id,l=o.init();if("filterDropDown"in l){var r=e(l.filterDropDown);if(0!=r.columns.length){var u=o.table().container(),s=a+"_filterWrapper",c=s+" "+(r.bootstrap?"form-inline":"");t(u).prepend('<div id="'+s+'" class="'+c+'">'+r.label+"</div>"),o.columns(r.columnsIdxList).every(function(){var e=this.index(),i=null!==r.columns[e].title?r.columns[e].title:t(this.header()).html();""==i&&(i="column "+(e+1));var n="form-control "+a+"_filterSelect",o=a+"_filterSelect"+e;t("#"+s).append('<select id="'+o+'" class="'+n+'"></select>');var l=t("#"+o).empty().append('<option value="">('+i+")</option>");})}}}}),t(document).on("init.dt",function(i,n){if("dt"===i.namespace){var o=new t.fn.dataTable.Api(n),a=o.table().node().id,l=o.init();if("filterDropDown"in l){var r=e(l.filterDropDown);o.table().container();o.columns(r.columnsIdxList).every(function(){var e=this,i=e.index(),n=t("#"+(a+"_filterSelect"+i));n.on("change",function(){var i=t.fn.dataTable.util.escapeRegex(t(this).val());e.search(i?"^"+i+"$":"",!0,!1).draw()}),e.data().unique().sort().each(function(t,e){""!=t&&n.append('<option value="'+t+'">'+t+"</option>")})})}}})}(jQuery);</script>
+
+{% endblock %}
+{% block extra_script %}
+$(".modal-comments-button").on("click", function() {
+    var url = "{% url 'blacklist:modal_comment' 123456 %}";
+    var id = this.id;
+    var title = this.title;
+    url = url.replace('123456', id);
+    $.get(url, function(data) {
+        console.log(data);
+        modal_body = $("#main-modal-body")[0];
+        modal_title = $("#main-modal-title")[0];
+        modal_title.innerHTML = title;
+        modal_body.innerHTML = data;
+        $("#modal-main").modal();
+    });
+});
+
+$(".modal-edit-button").on("click", function() {
+    var url = "{% url 'blacklist:modal_edit' 123456 %}";
+    var id = this.id;
+    var title = this.title;
+    url = url.replace('123456', id);
+    $.get(url, function(data) {
+        console.log(data);
+        modal_body = $("#main-modal-body")[0];
+        modal_title = $("#main-modal-title")[0];
+        modal_title.innerHTML = title;
+        modal_body.innerHTML = data;
+        $("#modal-main").modal();
+    });
+});
+
+$(".modal-add-comment-button").on("click", function() {
+    var url = "{% url 'blacklist:modal_add_comment' 123456 %}";
+    var id = this.id;
+    var title = this.title;
+    url = url.replace('123456', id);
+    $.get(url, function(data) {
+        console.log(data);
+        modal_body = $("#main-modal-body")[0];
+        modal_title = $("#main-modal-title")[0];
+        modal_title.innerHTML = title;
+        modal_body.innerHTML = data;
+        $("#modal-main").modal();
+    });
+});
+
+$(".modal-add-new").on("click", function() {
+    var url = "{% url 'blacklist:search_names' %}";
+    var id = this.id;
+    var title = this.title;
+
+    function search(){
+        var url = "{% url 'blacklist:search_names' %}";
+        var title = this.title;
+        search_data = {"name":$("#id_name").val()}
+        var token =  document.getElementsByName('csrfmiddlewaretoken')[1].value
+        data = '<div class="text-center"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>'
+        modal_body.innerHTML = data;
+        $.ajax({
+            headers: {'X-CSRFToken': token},
+            method:"POST",
+            url:url, 
+            data:search_data, 
+            success:search_post});
+
+    }
+    function search_post(data) {
+        console.log(data);
+        modal_body = $("#main-modal-body")[0];
+        modal_title = $("#main-modal-title")[0];
+        modal_title.innerHTML = title;
+        modal_body.innerHTML = data;
+        $("#modal-main").modal();
+        $("#id_name").keypress(function(event){ 
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){                
+                event.preventDefault();
+                search()
+            }
+        });    
+        $(".search-submit").on("click", function() {
+            modal_body = $("#main-modal-body")[0];
+            search()
+        });
+        $(".add-new-btn").on("click", function() {
+            var url = "{% url 'blacklist:modal_add' 123456 %}";
+            var id = this.id;
+            var title = this.title;
+            url = url.replace('123456', id);
+            modal_body = $("#main-modal-body")[0];
+            var token =  document.getElementsByName('csrfmiddlewaretoken')[1].value
+            data = '<div class="text-center"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>'
+            modal_body.innerHTML = data;
+            $.ajax({
+                headers: {'X-CSRFToken': token},
+                method:"POST",
+                url:url, 
+                success:search_post});
+        });
+        $('#searched-names').DataTable({
+            "filterDropDown": {
+                columns: [{
+                    idx: 2
+                        }],
+                bootstrap: true
+             },
+            "columnDefs": [
+                { "searchable": false, "targets": [0,3] },
+                { "sortable": false, "targets": [0,3] }
+            ],
+            "order": [
+                [1, "asc"]
+            ],
+            "pageLength": 10,
+            "responsive" : true
+        });
+    }
+
+    $.get(url, search_post);
+});
+
+    $(document).ready(function() {
+        $('#notes-table').DataTable({
+            "filterDropDown": {
+					columns: [{
+						idx: 5
+                            },{
+						idx: 6
+                            },{
+						idx: 7
+                            },{
+						idx: 8
+                            }],
+                    bootstrap: true
+            },
+            "columnDefs": [
+                { "searchable": false, "targets": [0] },
+                { "sortable": false, "targets": [0,4,9] },
+                { "visible": false, "targets": [5, 6, 7, 8] }
+
+            ],
+            "order": [
+                [1, "asc"]
+            ],
+            "pageLength": 25,
+            "responsive" : true
+        }); });
+
+                  
+{% endblock %}

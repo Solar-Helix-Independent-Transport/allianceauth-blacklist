@@ -1,0 +1,62 @@
+{% extends 'allianceauth/base.html' %}
+{% load i18n %}
+{% block page_title %}{% trans "Character Update" %}{% endblock %}
+{% block extra_css %}
+{% include 'bundles/datatables-css.html' %}
+{% endblock extra_css %}
+
+{% block content %}
+
+<h1 class="text-center col-md-12">Editing Pilot Log</h1>
+<p class="text-center col-md-12">Please ensure character below is correct!</p>
+{% if note.eve_catagory == 'character' %}
+<div class="text-center col-md-offset-3 col-md-6">
+    <div class="text-center col-md-6">
+        {% evename_img note.eve_id note.eve_name note.eve_catagory 128 %}
+        <h4>{{note.eve_name}}</h4>
+    </div>
+    <div  class="text-center col-md-6">
+        <div class="text-center col-md-12">
+            {% evename_img note.corporation_id note.corporation_name "corporation" 64 %}
+            <h5>{{note.corporation_name}}</h5>
+        </div>
+        <div class="text-center col-md-12">
+            {% evename_img note.alliance_id note.alliance_name "alliance" 64 %}
+            <h5>{{note.alliance_name}}</h5>
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div>
+{% else %}
+<div class="text-center col-md-offset-3 col-md-6">
+    <div class="text-center col-md-12">
+        {% evename_img note.eve_id note.eve_name note.eve_catagory 128 %}
+        <h4>{{note.eve_name}}</h4>
+    </div>
+</div>
+<div class="clearfix"></div>
+{% endif %}
+<div class="col-sm-offset-3 col-sm-6">
+<form action="/blacklist/edit_note/{{note.id}}/" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="note_id" value="{{note.id}}" />
+    {% if add_restricted_note %}
+    <h4 class="text-center">
+        <span class="label label-warning">{{ form.restricted.label_tag }}
+        {{ form.restricted|addclass:'form-check' }}</span>
+    </h4>
+    {% endif %}
+    <p>
+        {{ form.reason.label_tag }}
+        {{ form.reason|addclass:'form-control' }}
+    </p>
+    {% if add_blacklist %}
+    <h4 class="text-center">
+        <span class="label label-danger">{{ form.blacklisted.label_tag }}
+        {{ form.blacklisted|addclass:'form-check' }}</span>
+    </h4>
+    {% endif %}
+    <input type="submit" value="Submit" class="btn btn-primary">
+</form>
+</div>
+{% endblock %}
