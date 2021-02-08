@@ -1,15 +1,16 @@
 {% load i18n %}
+{% load blacklist_tags %}
 <div>
 {% if note.eve_catagory == 'character' %}
 <div class="text-center col-md-6">
     <div class="text-center">
-        {% evename_img note.eve_id note.eve_name note.eve_catagory 128 %}
+        {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
         <h4>{{note.eve_name}}</h4>
     </div>
 </div>{% else %}
 <div class="text-center col-md-6">
     <div class="text-center">
-        {% evename_img note.eve_id note.eve_name note.eve_catagory 128 %}
+        {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
         <h4>{{note.eve_name}}</h4>
     </div>
 </div>{% endif %}

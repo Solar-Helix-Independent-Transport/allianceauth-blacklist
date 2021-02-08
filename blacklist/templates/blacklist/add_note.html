@@ -1,17 +1,18 @@
+{% load blacklist_tags %}
 <p class="text-center col-md-12">Please ensure the details below are correct!</p>
 {% if name.category == 'character' %}
 <div class="text-center col-md-12">
     <div class="text-center col-md-6">
-        {% evename_img name.id name.name name.category 128 %}
+        {% eve_logo name.id name.name name.category 128 %}
         <h4>{{name.name}}</h4>
     </div>
     <div  class="text-center col-md-6">
         <div class="text-center col-md-12">
-            {% evename_img char_info.corporation_id corp_info.name "corporation" 64 %}
+            {% eve_logo char_info.corporation_id corp_info.name "corporation" 64 %}
             <h5>{{corp_info.name}}</h5>
         </div>
         <div class="text-center col-md-12">
-            {% evename_img corp_info.alliance_id alliance_info.name "alliance" 64 %}
+            {% eve_logo corp_info.alliance_id alliance_info.name "alliance" 64 %}
             <h5>{{alliance_info.name}}</h5>
         </div>
     </div>
@@ -20,7 +21,7 @@
 {% else %}
 <div class="text-center col-md-12">
     <div class="text-center col-md-12">
-        {% evename_img name.id name.name name.category 128 %}
+        {% eve_logo name.id name.name name.category 128 %}
         <h4>{{name.name}}</h4>
     </div>
 </div>
