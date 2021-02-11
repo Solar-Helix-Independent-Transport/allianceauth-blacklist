@@ -10,4 +10,3 @@ class EveNoteForm(forms.Form):
 class AddComment(forms.Form):
     comment = forms.CharField(label='Comment', widget=forms.Textarea)
     restricted = forms.BooleanField(label='Restricted', required=False)
-

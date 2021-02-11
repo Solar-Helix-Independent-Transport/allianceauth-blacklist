@@ -14,11 +14,11 @@ class EveNote(models.Model):
     added_by = models.CharField(max_length=500)
     added_at = models.DateTimeField(auto_now_add=True)
     reason = models.TextField()
-    
+
     # character additions
     corporation_id = models.IntegerField(null=True, default=None)
     corporation_name = models.CharField(max_length=500, null=True, default=None)
-    
+
     # corp/character additions
     alliance_id = models.IntegerField(null=True, default=None)
     alliance_name = models.CharField(max_length=500, null=True, default=None)

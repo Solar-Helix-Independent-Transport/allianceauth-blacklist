@@ -29,7 +29,6 @@ class BlacklistMenu(MenuItemHook):
         return ''
 
 
-
 @hooks.register('menu_item_hook')
 def register_menu():
     return LogMenu()

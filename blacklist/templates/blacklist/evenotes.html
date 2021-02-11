@@ -152,8 +152,8 @@ $(".modal-add-new").on("click", function() {
         $.ajax({
             headers: {'X-CSRFToken': token},
             method:"POST",
-            url:url, 
-            data:search_data, 
+            url:url,
+            data:search_data,
             success:search_post});
 
     }
@@ -164,13 +164,13 @@ $(".modal-add-new").on("click", function() {
         modal_title.innerHTML = title;
         modal_body.innerHTML = data;
         $("#modal-main").modal();
-        $("#id_name").keypress(function(event){ 
+        $("#id_name").keypress(function(event){
             var keycode = (event.keyCode ? event.keyCode : event.which);
-            if(keycode == '13'){                
+            if(keycode == '13'){
                 event.preventDefault();
                 search()
             }
-        });    
+        });
         $(".search-submit").on("click", function() {
             modal_body = $("#main-modal-body")[0];
             search()
@@ -187,7 +187,7 @@ $(".modal-add-new").on("click", function() {
             $.ajax({
                 headers: {'X-CSRFToken': token},
                 method:"POST",
-                url:url, 
+                url:url,
                 success:search_post});
         });
         $('#searched-names').DataTable({
@@ -239,5 +239,5 @@ $(".modal-add-new").on("click", function() {
             "responsive" : true
         }); });
 
-                  
+
 {% endblock %}

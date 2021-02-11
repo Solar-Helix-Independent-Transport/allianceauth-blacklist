@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('eve_id', models.IntegerField()),
                 ('eve_name', models.CharField(max_length=500)),
-                ('eve_catagory', models.CharField(choices=[('alliance', 'alliance'), ('character', 'character'), ('corporation', 'corporation')], max_length=30)),
+                ('eve_catagory', models.CharField(choices=[
+                 ('alliance', 'alliance'), ('character', 'character'), ('corporation', 'corporation')], max_length=30)),
                 ('blacklisted', models.BooleanField(default=False)),
                 ('restricted', models.BooleanField(default=False)),
                 ('added_by', models.CharField(max_length=500)),
@@ -41,7 +42,8 @@ class Migration(migrations.Migration):
                 ('comment', models.TextField()),
                 ('comment_date', models.DateTimeField(auto_now_add=True)),
                 ('restricted', models.BooleanField(default=False)),
-                ('eve_note', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comment', to='blacklist.evenote')),
+                ('eve_note', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                               related_name='comment', to='blacklist.evenote')),
             ],
             options={
                 'permissions': (('view_eve_note_comments', 'Can view eve note comments'), ('view_eve_note_restricted_comments', 'Can view restricted eve note comments'), ('add_new_eve_note_comments', 'Can add comments on eve notes'), ('add_new_eve_note_restricted_comments', 'Can add new restricted comments to eve notes')),

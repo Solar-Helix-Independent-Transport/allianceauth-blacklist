@@ -10,6 +10,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @receiver(post_save, sender=models.EveNote)
 def process_eve_note(sender, instance: models.EveNote, *args, **kwargs):
     blk_state = State.objects.get(name="Blacklist")
