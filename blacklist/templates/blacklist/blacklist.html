@@ -23,7 +23,12 @@
                             <td class="text-center" style="vertical-align:middle;">{% eve_logo note.eve_id note.eve_name note.eve_catagory 64  %}</td>
                             <td class="text-center" style="vertical-align:middle;"><p>{{ note.eve_name }}
                                 {% if note.eve_catagory == 'character' %}<br><span class="label label-default">{{ note.corporation_name }}</span></br><span class="label label-default">{{ note.alliance_name }}</span>{% endif %}</p></td>
-                            <td style="vertical-align:middle;"><p style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ note.reason }}</p></td>
+                            <td style="vertical-align:middle;"><p style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">
+                                {% if note.restricted and not  %}
+                                    Restricted Content! Contact {{note.added_by}}
+                                {% else %}
+                                    {{ note.reason }}</p></td>
+                                {% endif $}%}
 
                             <!-- for filtering -->
                             <td class="text-center" style="vertical-align:middle;">{{ note.eve_catagory }}</td>

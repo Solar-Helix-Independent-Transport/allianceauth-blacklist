@@ -6,11 +6,10 @@ from .models import EveNote, EveNoteComment
 from .forms import EveNoteForm, AddComment
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
 from . import providers
 
-import logging
-logger = logging.getLogger(__name__)
+from allianceauth.services.hooks import get_extension_logger
+logger = get_extension_logger(__name__)
 
 # Create your views here... *don't tell me what to do....*
 
@@ -19,6 +18,8 @@ logger = logging.getLogger(__name__)
 def note_board(request):
     add_perms = request.user.has_perm('blacklist.add_basic_eve_notes')
     add_global_perms = request.user.has_perm('blacklist.add_new_eve_notes')
+    add_blacklist_perms = request.user.has_perm('blacklist.add_to_blacklist')
+    add_restricted_perms = request.user.has_perm('blacklist.add_restricted_eve_notes')
     view_perms = request.user.has_perm('blacklist.view_basic_eve_notes')
     view_global_perms = request.user.has_perm('blacklist.view_eve_notes')
 
@@ -26,16 +27,13 @@ def note_board(request):
         messages.error(request, "No Permissions")
         return redirect('authentication:dashboard')
 
-    restricted = request.user.has_perm('blacklist.add_restricted_eve_notes')
-    ultra_restricted = request.user.has_perm('blacklist.add_ultra_restricted_eve_notes')
-
     eve_notes = None
 
     if view_global_perms or add_global_perms:
         eve_notes = EveNote.objects.filter(restricted=False
                                            ).prefetch_related('comment')
         #  Restricted view
-        if restricted:
+        if add_restricted_perms:
             if eve_notes:
                 eve_notes = eve_notes | EveNote.objects.filter(restricted=True).prefetch_related('comment')
             else:
@@ -49,8 +47,8 @@ def note_board(request):
     context = {
         'add_note': (add_perms or add_global_perms),
         'view_restricted_note': request.user.has_perm('blacklist.view_restricted_eve_notes'),
-        'add_blacklist': request.user.has_perm('blacklist.add_to_blacklist'),
-        'edit_note': request.user.has_perm('blacklist.add_new_eve_notes'),
+        'add_blacklist': add_blacklist_perms,
+        'edit_note': add_global_perms,
         'add_comment': request.user.has_perm('blacklist.add_new_eve_note_comments'),
         'add_restricted_comment': request.user.has_perm('blacklist.add_new_eve_note_restricted_comments'),
         'view_comment': request.user.has_perm('blacklist.view_eve_note_comments'),
@@ -79,7 +77,6 @@ def get_evenote_comments(request, evenote_id=None):
     ctx = {
         'comments': comments,
         'add_blacklist': request.user.has_perm('blacklist.add_to_blacklist'),
-        'add_ultra_restricted_note': request.user.has_perm('blacklist.add_ultra_restricted_eve_notes'),
         'add_restricted_note': request.user.has_perm('blacklist.add_restricted_eve_notes')
 
     }
@@ -105,8 +102,7 @@ def get_add_comment(request, evenote_id=None):
     note = EveNote.objects.get(id=evenote_id)
     ctx = {
         'note': note,
-        'add_blacklist': request.user.has_perm('blacklist.add_to_blacklist'),
-        'add_restricted_note': request.user.has_perm('blacklist.add_restricted_eve_notes')
+        'add_restricted_note': request.user.has_perm('blacklist.add_new_eve_note_restricted_comments')
 
     }
     return HttpResponse(render_to_string('blacklist/modal_add_comment.html', ctx, request=request))
@@ -117,6 +113,8 @@ def get_add_comment(request, evenote_id=None):
 def get_add_evenote(request, eve_id=None):
     add_perms = request.user.has_perm('blacklist.add_basic_eve_notes')
     add_global_perms = request.user.has_perm('blacklist.add_new_eve_notes')
+    add_blacklist_perms = request.user.has_perm('blacklist.add_to_blacklist')
+    add_restricted_perms = request.user.has_perm('blacklist.add_restricted_eve_notes')
     message = None
     if not (add_perms or add_global_perms):
         message = "No Permissions"
@@ -160,8 +158,8 @@ def get_add_evenote(request, eve_id=None):
                                'char_info': char_info,
                                'corp_info': corp_info,
                                'alliance_info': alliance_info,
-                               'add_blacklist': request.user.has_perm('blacklist.add_to_blacklist'),
-                               'add_restricted_note': request.user.has_perm('blacklist.add_restricted_eve_notes')}
+                               'add_blacklist': add_blacklist_perms,
+                               'add_restricted_note': add_restricted_perms}
                     return HttpResponse(render_to_string('blacklist/add_note.html', context, request=request))
 
             except Exception as e:
@@ -179,6 +177,8 @@ def get_add_evenote(request, eve_id=None):
 def search_names(request):
     add_perms = request.user.has_perm('blacklist.add_basic_eve_notes')
     add_global_perms = request.user.has_perm('blacklist.add_new_eve_notes')
+    add_blacklist_perms = request.user.has_perm('blacklist.add_to_blacklist')
+    add_restricted_perms = request.user.has_perm('blacklist.add_restricted_eve_notes')
 
     if not (add_perms or add_global_perms):
         messages.info(request, "No Permissions")
@@ -212,7 +212,7 @@ def search_names(request):
     context = {'names': names,
                'searched': searched,
                'message': message,
-               'restricted_perms': add_global_perms
+               'restricted_perms': add_restricted_perms
                }
     return HttpResponse(render_to_string('blacklist/search_name.html', context, request=request))
 
@@ -261,10 +261,6 @@ def add_note(request, eve_id=None):
                 restricted = form.cleaned_data['restricted']
 
                 blacklisted = form.cleaned_data['blacklisted']
-
-                if restricted:
-                    blacklisted = False
-
                 EveNote.objects.create(eve_name=request.POST.get('eve_name'),
                                        eve_catagory=request.POST.get('eve_cat'),
                                        alliance_id=request.POST.get('alliance_id', None),
@@ -291,8 +287,6 @@ def edit_note(request, note_id=None):
         if form.is_valid():
             restricted = form.cleaned_data['restricted']
             blacklisted = form.cleaned_data['blacklisted']
-            if restricted:
-                blacklisted = False
             jb = EveNote.objects.get(id=request.POST.get('note_id'))
             jb.reason = form.cleaned_data['reason']
             jb.blacklisted = blacklisted
@@ -308,7 +302,6 @@ def edit_note(request, note_id=None):
                                     'ultra_restricted': note.ultra_restricted})
         context = {'form': form,
                    'note': note,
-                   'add_blacklist': request.user.has_perm('toolbox.add_to_blacklist'),
-                   'add_restricted_note': request.user.has_perm('toolbox.add_restricted_eve_notes')}
+                   'add_blacklist': request.user.has_perm('blacklist.add_to_blacklist')}
 
         return render(request, 'blacklist/edit_note.html', context)
