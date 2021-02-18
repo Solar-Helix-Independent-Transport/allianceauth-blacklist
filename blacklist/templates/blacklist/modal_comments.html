@@ -1,22 +1,12 @@
 {% load i18n %}
 {% load humanize %}
-{% if comments %}
 {% for comment in comments %}
     {% if forloop.first %}
-    {% else %}
     {% endif %}
-        {% if comment.restricted %}
-            {% if view_restricted_comment or add_restricted_comment %}
-                <p class="text-center"><b>{{comment.added_by}}</b> ({{ comment.comment_date|naturaltime }}) <span class="label label-warning fa fa-shield" title="Restricted"> </span></p>
-                <p class="text-center" style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ comment.comment }}</p>
-            {% endif %}
-        {% else %}
-                <p class="text-center"><b>{{comment.added_by}}</b> ({{ comment.comment_date|naturaltime }})</p>
-                <p class="text-center" style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ comment.comment }}</p>
-        {% endif %}
+    <p class="text-center"><b>{{comment.added_by}}</b> ({{ comment.comment_date|naturaltime }}){% if comment.restricted %}<span class="label label-warning fas fa-shield-alt" title="Restricted"> </span>{% endif %}</p>
+    <p class="text-center" style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ comment.comment }}</p>
     {% if forloop.last %}
     {% endif %}
 {% empty %}
+    <p class="alert alert-info text-center">No Comments!</p>
 {% endfor %}
-{% else %}
-{% endif %}

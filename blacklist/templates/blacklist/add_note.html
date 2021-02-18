@@ -42,22 +42,19 @@
     {% endif %}
     {% if add_restricted_note %}
         <h4 class="text-center">
+            {{ form.restricted.errors }}
             <span class="label label-warning">{{ form.restricted.label_tag }}
             {{ form.restricted|addclass:'form-check' }}</span>
         </h4>
     {% endif %}
-    {% if add_ultra_restricted_note %}
-        <h4 class="text-center">
-            <span class="label label-danger">{{ form.ultra_restricted.label_tag }}
-            {{ form.ultra_restricted|addclass:'form-check' }}</span>
-        </h4>
-    {% endif %}
     <p>
+        {{ form.reason.errors }}
         {{ form.reason.label_tag }}
         {{ form.reason|addclass:'form-control' }}
     </p>
     {% if add_blacklist %}
         <h4 class="text-center">
+            {{ form.blacklisted.errors }}
             <span class="label label-danger">{{ form.blacklisted.label_tag }}
             {{ form.blacklisted|addclass:'form-check' }}</span>
         </h4>

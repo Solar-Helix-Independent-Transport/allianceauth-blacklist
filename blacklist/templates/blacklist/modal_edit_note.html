@@ -21,7 +21,7 @@
     {% if add_restricted_note %}
         <h4 class="text-center">
             <span class="label label-warning"><label for="id_restricted">Restricted:</label>
-            <input type="checkbox" name="restricted" class="form-check" id="id_restricted"></span>
+            <input type="checkbox" name="restricted" class="form-check" id="id_restricted" {% if note.restricted %}checked{% endif %}></span>
         </h4>
     {% endif %}
         <p>

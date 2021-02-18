@@ -63,8 +63,11 @@ def note_board(request):
 @permission_required('blacklist.view_eve_blacklist')
 def blacklist(request):
     blacklist = EveNote.objects.filter(blacklisted=True)
+    add_restricted_perms = request.user.has_perm('blacklist.add_restricted_eve_notes')
+
     context = {
         'blacklist': blacklist,
+        'view_restricted_note': add_restricted_perms
     }
 
     return render(request, 'blacklist/blacklist.html', context=context)
@@ -73,14 +76,17 @@ def blacklist(request):
 @login_required
 @permission_required('blacklist.add_new_eve_note_comments')
 def get_evenote_comments(request, evenote_id=None):
+    view_restricted = request.user.has_perm('view_eve_note_restricted_comments')
     comments = EveNote.objects.prefetch_related('comment').get(id=evenote_id).comment.all()
+    if not view_restricted:
+        comments = comments.filter(restricted=False)
     ctx = {
         'comments': comments,
         'add_blacklist': request.user.has_perm('blacklist.add_to_blacklist'),
         'add_restricted_note': request.user.has_perm('blacklist.add_restricted_eve_notes')
 
     }
-    return HttpResponse(render_to_string('blacklist/modal_comments.html', ctx))
+    return HttpResponse(render_to_string('blacklist/modal_comments.html', ctx, request=request))
 
 
 @login_required
