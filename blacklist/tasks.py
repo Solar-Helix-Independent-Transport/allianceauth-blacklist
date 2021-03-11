@@ -4,14 +4,14 @@ from celery import shared_task
 from allianceauth.authentication.models import State
 from allianceauth.eveonline.models import EveCharacter, EveAllianceInfo, EveCorporationInfo
 from . import models
-
+from . import app_settings
 
 logger = get_extension_logger(__name__)
 
 
 @shared_task
 def run_blacklist_update(note_id):
-    blk_state = State.objects.get(name="Blacklist")
+    blk_state = State.objects.get(name=app_settings.BLACKLIST_STATE_NAME)
     instance = models.EveNote.objects.get(pk=note_id)
     if instance.eve_catagory == "character":
         logger.debug(f"Checking Character for blacklist '{instance.eve_name}'")
