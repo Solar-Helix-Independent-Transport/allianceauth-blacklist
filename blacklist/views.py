@@ -169,7 +169,8 @@ def get_add_evenote(request, eve_id=None):
                     return HttpResponse(render_to_string('blacklist/add_note.html', context, request=request))
 
             except Exception as e:
-                message = "ESI Error. Please Try again later."
+                logger.error(e)
+                message = e.message
 
     context = {'names': False,
                'searched': False,

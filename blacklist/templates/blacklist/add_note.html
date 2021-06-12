@@ -44,19 +44,19 @@
         <h4 class="text-center">
             {{ form.restricted.errors }}
             <span class="label label-warning">{{ form.restricted.label_tag }}
-            {{ form.restricted|addclass:'form-check' }}</span>
+            {{ form.restricted }}</span>
         </h4>
     {% endif %}
     <p>
         {{ form.reason.errors }}
         {{ form.reason.label_tag }}
-        {{ form.reason|addclass:'form-control' }}
+        {{ form.reason }}
     </p>
     {% if add_blacklist %}
         <h4 class="text-center">
             {{ form.blacklisted.errors }}
             <span class="label label-danger">{{ form.blacklisted.label_tag }}
-            {{ form.blacklisted|addclass:'form-check' }}</span>
+            {{ form.blacklisted }}</span>
         </h4>
     {% endif %}
     <input type="submit" value="Submit" class="btn col-md-12 btn-primary">
