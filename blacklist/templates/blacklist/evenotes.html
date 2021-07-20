@@ -3,10 +3,10 @@
 {% load humanize %}
 {% load blacklist_tags %}
 {% block tb_block %}
-</br>
+<br>
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <div class="pull-left"><H4 class="text-center">Pilot Log</H4></div>
+        <div class="pull-left"><h4 class="text-center">Pilot Log</h4></div>
         <div class="pull-right">
             {% if add_note %}<a class="btn btn-success modal-add-new" type="button" title="Add New">Add New</a>{% endif %}
         </div>
@@ -17,19 +17,21 @@
     <div class="tab-pane active" id="all-notes">
         {% if notes %}
         <div class="container col-xs-12">
-            <H4 class="text-center">All Notes</H4>
-            <table class="table table-striped" width="100%" id="notes-table">
+            <h4 class="text-center">All Notes</h4>
+            <table class="table table-striped" id="notes-table" style="width: 100%;">
                     <thead>
-                        <th class="text-center"></th>
-                        <th class="text-center">Name</th>
-                        <th class="text-center">Date Added</th>
-                        <th class="text-center">Added By</th>
-                        <th>Reason</th>
-                        <th>Added By</th>
-                        <th>Category</th>
-                        <th>Corporation</th>
-                        <th>Alliance</th>
-                        <th></th>
+                        <tr>
+                            <th class="text-center"></th>
+                            <th class="text-center">Name</th>
+                            <th class="text-center">Date Added</th>
+                            <th class="text-center">Added By</th>
+                            <th>Reason</th>
+                            <th>Added By</th>
+                            <th>Category</th>
+                            <th>Corporation</th>
+                            <th>Alliance</th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
                     {% for note in notes %}
@@ -37,7 +39,7 @@
                         <tr>
                             <td class="text-center" style="vertical-align:middle;">{% eve_logo note.eve_id note.eve_name note.eve_catagory 64  %}</td>
                             <td class="text-center" style="vertical-align:middle;"><p>{{ note.eve_name }}
-                                {% if note.eve_catagory == 'character' %}<br><span class="label label-default">{{ note.corporation_name }}</span></br><span class="label label-default">{{ note.alliance_name }}</span>{% endif %}</p>{% if note.blacklisted %}<span class="label label-danger">BLACKLISTED</span>{% endif %}{% if note.restricted %}<span class="label label-warning">RESTRICTED</span>{% endif %}</td>
+                                {% if note.eve_catagory == 'character' %}<br><span class="label label-default">{{ note.corporation_name }}</span><br><span class="label label-default">{{ note.alliance_name }}</span>{% endif %}</p>{% if note.blacklisted %}<span class="label label-danger">BLACKLISTED</span>{% endif %}{% if note.restricted %}<span class="label label-warning">RESTRICTED</span>{% endif %}</td>
                             <td class="text-center" style="vertical-align:middle;"><p>{{ note.added_at|date:"Y-m-d H:i"}}</p><p>{{ note.added_at|naturaltime }}</p></td>
                             <td class="text-center" style="vertical-align:middle;"><p>{{ note.added_by }}</p></td>
                             <td style="vertical-align:middle;"><p style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ note.reason }}</p></td>
@@ -79,7 +81,6 @@
             </div>
             <div id="main-modal-body" class="modal-body"  style="overflow-y:auto;"></div>
 
-            </div>
         </div>
     </div>
 </div>

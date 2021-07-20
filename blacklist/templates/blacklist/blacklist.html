@@ -3,26 +3,27 @@
 {% load blacklist_tags %}
 {% load humanize %}
 {% block tb_block %}
-</br>
+<br>
 <h1 class="text-center">Blacklist</h1>
 <div class="col-sm-offset-2 col-sm-8">
     <div class="tab-pane in active" id="blacklist">
         {% if blacklist %}
         <div class="container col-xs-12">
-            <table class="table table-striped" width="100%" id="blacklist-table">
+            <table class="table table-striped" id="blacklist-table" style="width: 100%;">
                     <thead>
-                        <th class="text-center"></th>
-                        <th class="text-center">Name</th>
-                        <th>Reason</th>
-                        <th>Category</th>
+                        <tr>
+                            <th class="text-center"></th>
+                            <th class="text-center">Name</th>
+                            <th>Reason</th>
+                            <th>Category</th>
+                        </tr>
                     </thead>
                     <tbody>
                     {% for note in blacklist %}
-
                         <tr>
                             <td class="text-center" style="vertical-align:middle;">{% eve_logo note.eve_id note.eve_name note.eve_catagory 64  %}</td>
                             <td class="text-center" style="vertical-align:middle;"><p>{{ note.eve_name }}
-                                {% if note.eve_catagory == 'character' %}<br><span class="label label-default">{{ note.corporation_name }}</span></br><span class="label label-default">{{ note.alliance_name }}</span>{% endif %}</p></td>
+                                {% if note.eve_catagory == 'character' %}<br><span class="label label-default">{{ note.corporation_name }}</span><br><span class="label label-default">{{ note.alliance_name }}</span>{% endif %}</p></td>
                             <td style="vertical-align:middle;"><p style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{% if note.restricted %}Restricted Content! Contact {{note.added_by}}{% else %}{{ note.reason }}{% endif %}</p></td>
 
                             <!-- for filtering -->
