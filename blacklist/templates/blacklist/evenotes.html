@@ -96,7 +96,6 @@ $(".modal-comments-button").on("click", function() {
     var title = this.title;
     url = url.replace('123456', id);
     $.get(url, function(data) {
-        console.log(data);
         modal_body = $("#main-modal-body")[0];
         modal_title = $("#main-modal-title")[0];
         modal_title.innerHTML = title;
@@ -111,7 +110,6 @@ $(".modal-edit-button").on("click", function() {
     var title = this.title;
     url = url.replace('123456', id);
     $.get(url, function(data) {
-        console.log(data);
         modal_body = $("#main-modal-body")[0];
         modal_title = $("#main-modal-title")[0];
         modal_title.innerHTML = title;
@@ -126,7 +124,6 @@ $(".modal-add-comment-button").on("click", function() {
     var title = this.title;
     url = url.replace('123456', id);
     $.get(url, function(data) {
-        console.log(data);
         modal_body = $("#main-modal-body")[0];
         modal_title = $("#main-modal-title")[0];
         modal_title.innerHTML = title;
@@ -156,7 +153,6 @@ $(".modal-add-new").on("click", function() {
 
     }
     function search_post(data) {
-        console.log(data);
         modal_body = $("#main-modal-body")[0];
         modal_title = $("#main-modal-title")[0];
         modal_title.innerHTML = title;
