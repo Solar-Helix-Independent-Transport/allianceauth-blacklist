@@ -155,8 +155,7 @@ $(".modal-add-new").on("click", function() {
             url:url,
             data:search_data,
             success:search_post});
-
-    }
+        }
     function search_post(data) {
         console.log(data);
         modal_body = $("#main-modal-body")[0];

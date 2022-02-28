@@ -1,6 +1,7 @@
 from . import urls
 from allianceauth import hooks
 from allianceauth.services.hooks import MenuItemHook, UrlHook
+from .models import BlacklistFilter
 
 
 class LogMenu(MenuItemHook):
@@ -42,3 +43,8 @@ def register_menu():
 @hooks.register('url_hook')
 def register_url():
     return UrlHook(urls, 'blacklist', r'^blacklist/')
+
+
+@hooks.register("secure_group_filters")
+def filters():
+    return [BlacklistFilter]
