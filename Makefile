@@ -10,12 +10,16 @@ help:
 clean:
 	rm -rf dist/*
 
+dev:
+	pip install --upgrade pip
+	pip install wheel
+	pip install tox
+	pip install -e .
+
 test:
 	tox
 
-dev:
-	pip install wheel
-	pip install -e .
+deploy:
 	pip install twine
 	echo "[pypi]" > ~/.pypirc
 	echo "username=__token__" >> ~/.pypirc
