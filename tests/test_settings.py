@@ -10,7 +10,7 @@ CELERY_ALWAYS_EAGER = True  # Forces celery to run locally for testing
 
 INSTALLED_APPS += [
     "blacklist",
-    'securegroups',
+    "securegroups"
 ]
 
 ROOT_URLCONF = "tests.urls"
@@ -20,8 +20,6 @@ NOSE_ARGS = [
     # '--cover-package=',
     # '--exe',  # If your tests need this to be found/run, check they py files are not chmodded +x
 ]
-
-CACHES["default"] = {"BACKEND": "django.core.cache.backends.db.DatabaseCache"}
 
 
 PASSWORD_HASHERS = [
@@ -38,3 +36,19 @@ PASSWORD_HASHERS = [
 ESI_SSO_CLIENT_ID = "123"
 ESI_SSO_CLIENT_SECRET = "123"
 ESI_SSO_CALLBACK_URL = "123"
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "redis_cache.RedisCache",
+        "LOCATION": "localhost:6379",
+        "OPTIONS": {
+            "DB": 1,
+        }
+        # "BACKEND": "django_redis.cache.RedisCache",
+        # "LOCATION": "redis://localhost:6379/1",
+        # "OPTIONS": {
+        #    "COMPRESSOR": "django_redis.compressors.lzma.LzmaCompressor",
+        # }
+    }
+}

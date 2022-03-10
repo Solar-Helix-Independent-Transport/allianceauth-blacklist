@@ -10,6 +10,9 @@ help:
 clean:
 	rm -rf dist/*
 
+test:
+	tox
+
 dev:
 	pip install wheel
 	pip install -e .

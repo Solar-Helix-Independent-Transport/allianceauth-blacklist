@@ -36,6 +36,7 @@ class TestBlacklistFilters(TestCase):
                 corp_id=1,
                 corp_name="Test Corp 1",
                 corp_ticker="TST1",
+
             )
             CharacterOwnership.objects.create(
                 user=user, character=main_char, owner_hash=f"main{uid}"
@@ -52,6 +53,10 @@ class TestBlacklistFilters(TestCase):
                 corporation_name="Test Corp 2",
                 corporation_id=2,
                 corporation_ticker="TST2",
+                alliance_id=9,
+                alliance_name="Test Alliance 9",
+                alliance_ticker="TSTA9",
+
             )
             CharacterOwnership.objects.create(
                 character=character, user=users[uid], owner_hash=f"ownalt{11+uid}"
@@ -97,7 +102,7 @@ class TestBlacklistFilters(TestCase):
         cls.alli_evenote = EveNote.objects.create(
             eve_id=5,
             eve_name="Alli 5",
-            eve_catagory='corporation',
+            eve_catagory='alliance',
             blacklisted=False,
             added_by="Tests",
             added_at=timezone.now(),
@@ -107,7 +112,7 @@ class TestBlacklistFilters(TestCase):
     def test_no_blacklists(self):
         users = {}
         for user in User.objects.all():
-            print
+
             users[user.pk] = None
 
         tests = {}
@@ -131,7 +136,7 @@ class TestBlacklistFilters(TestCase):
         self.char_evenote.save()
         users = []
         for user in User.objects.all():
-            print
+
             users.append(user.pk)
 
         tests = self.blacklist_filter.audit_filter(User.objects.filter(id__in=users))
@@ -152,7 +157,7 @@ class TestBlacklistFilters(TestCase):
         self.corp_evenote.save()
         users = {}
         for user in User.objects.all():
-            print
+
             users[user.pk] = None
 
         tests = {}
