@@ -4,7 +4,7 @@
 
 ## Installation
 
-1. Install from pip `pip install git+https://github.com/Solar-Helix-Independent-Transport/allianceauth-blacklist.git`
+1. Install from pip `pip install allianceauth-blacklist`
 2. Add `'blacklist'` to INSTALLED_APPS in local.py
 3. Run the management command to update AA's State system `python myauth/manage.py blacklist_state`
 4. Give permissions
