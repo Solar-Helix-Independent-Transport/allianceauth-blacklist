@@ -4,6 +4,7 @@ from . import views
 app_name = 'blacklist'
 
 urlpatterns = [
+    re_path(r'^set/$', views.blacklist_set_search_character, name='set'),
     re_path(r'^notes/$', views.note_board, name='note_board'),
     re_path(r'^blacklist/$', views.blacklist, name='blacklist'),
     re_path(r'^get_add_note/(?P<eve_id>(\d)*)/$', views.get_add_evenote, name='modal_add'),

@@ -1,8 +1,17 @@
+from pyexpat import model
 from django.db import models
 from allianceauth.authentication.models import CharacterOwnership
+from allianceauth.eveonline.models import EveCharacter
 from django.contrib.auth.models import User
 from django.db.models import Q
 from collections import defaultdict
+
+from requests_toolbelt import user_agent
+
+
+class BlackListSearchCharacter(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    character = models.ForeignKey(EveCharacter, on_delete=models.CASCADE)
 
 
 class EveNote(models.Model):

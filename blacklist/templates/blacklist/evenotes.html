@@ -9,6 +9,7 @@
         <div class="pull-left"><H4 class="text-center">Pilot Log</H4></div>
         <div class="pull-right">
             {% if add_note %}<a class="btn btn-success modal-add-new" type="button" title="Add New">Add New</a>{% endif %}
+            {% if search_char %}<a class="btn btn-default" type="button" title="Set Char" href="/blacklist/set/">{{search_char.character_name}}</a>{% else %}<a class="btn btn-warning" type="button" title="Set Char" href="/blacklist/set/">Select Search Char!</Select></a>{% endif %}
         </div>
         <div class="clearfix"></div>
     </div>

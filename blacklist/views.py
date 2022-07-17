@@ -1,17 +1,46 @@
+from allianceauth.eveonline.models import EveCharacter
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
+from esi.models import Token
 
 from .models import EveNote, EveNoteComment
 from .forms import EveNoteForm, AddComment
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from . import providers
+from esi.decorators import token_required
+
+from . import providers, models
 
 from allianceauth.services.hooks import get_extension_logger
+
 logger = get_extension_logger(__name__)
 
 # Create your views here... *don't tell me what to do....*
+
+
+@login_required
+@permission_required(['blacklist.add_basic_eve_notes', 'blacklist.add_new_eve_notes'])
+@token_required(['esi-search.search_structures.v1'])
+def blacklist_set_search_character(request, token):
+    if token:
+        char = EveCharacter.objects.get(character_id=token.character_id)
+        char, _ = models.BlackListSearchCharacter.objects.update_or_create(
+            user=request.user,
+            defaults={
+                "character": char
+            }
+        )
+        messages.success(request, ("Linked Search Character: {}".format(token.character_name)))
+    return redirect("blacklist:note_board")
+
+
+def get_search_char(user):
+    try:
+        char = models.BlackListSearchCharacter.objects.get(user=user)
+        return char.character
+    except models.BlackListSearchCharacter.DoesNotExist:
+        return False
 
 
 @login_required
@@ -53,6 +82,7 @@ def note_board(request):
         'add_restricted_comment': request.user.has_perm('blacklist.add_new_eve_note_restricted_comments'),
         'view_comment': request.user.has_perm('blacklist.view_eve_note_comments'),
         'view_restricted_comment': request.user.has_perm('blacklist.view_eve_note_restricted_comments'),
+        "search_char": get_search_char(request.user),
         'notes': eve_notes
     }
 
@@ -121,6 +151,7 @@ def get_add_evenote(request, eve_id=None):
     add_global_perms = request.user.has_perm('blacklist.add_new_eve_notes')
     add_blacklist_perms = request.user.has_perm('blacklist.add_to_blacklist')
     add_restricted_perms = request.user.has_perm('blacklist.add_restricted_eve_notes')
+
     message = None
     if not (add_perms or add_global_perms):
         message = "No Permissions"
@@ -197,8 +228,10 @@ def search_names(request):
         # check whether it's valid:
         name = request.POST.get('name')
         try:
-            hits = providers.esi.client.Search.get_search(
-                search=name, categories=['character', 'corporation', 'alliance']).result()
+            search_char = get_search_char(request.user)
+            token = Token.get_token(search_char.character_id, ['esi-search.search_structures.v1'])
+            hits = providers.esi.client.Search.get_characters_character_id_search(
+                search=name, categories=['character', 'corporation', 'alliance'], character_id=search_char.character_id, token=token.valid_access_token()).result()
             corps = hits.get('corporation', [])
             chars = hits.get('character', [])
             alliance = hits.get('alliance', [])
