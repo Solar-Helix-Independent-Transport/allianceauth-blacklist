@@ -6,8 +6,6 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from collections import defaultdict
 
-from requests_toolbelt import user_agent
-
 
 class BlackListSearchCharacter(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
