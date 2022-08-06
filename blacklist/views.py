@@ -224,6 +224,10 @@ def search_names(request):
     names = None
     searched = False
     message = False
+
+    if not get_search_char(request.user):
+        return HttpResponse(render_to_string('blacklist/no_character_chosen.html', {}, request=request))
+
     if request.method == 'POST':
         # check whether it's valid:
         name = request.POST.get('name')
