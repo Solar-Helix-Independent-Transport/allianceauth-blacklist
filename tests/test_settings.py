@@ -23,7 +23,7 @@ NOSE_ARGS = [
 
 
 PASSWORD_HASHERS = [
-    "django.contrib.auth.hashers.MD5PasswordHasher",
+    'django.contrib.auth.hashers.MD5PasswordHasher',
 ]
 
 # LOGGING = None  # Comment out to enable logging for debugging
@@ -33,22 +33,21 @@ PASSWORD_HASHERS = [
 # to https://example.com/sso/callback substituting your domain for example.com
 # Logging in to auth requires the publicData scope (can be overridden through the
 # LOGIN_TOKEN_SCOPES setting). Other apps may require more (see their docs).
-ESI_SSO_CLIENT_ID = "123"
-ESI_SSO_CLIENT_SECRET = "123"
-ESI_SSO_CALLBACK_URL = "123"
-
+ESI_SSO_CLIENT_ID = '123'
+ESI_SSO_CLIENT_SECRET = '123'
+ESI_SSO_CALLBACK_URL = '123'
 
 CACHES = {
     "default": {
-        "BACKEND": "redis_cache.RedisCache",
-        "LOCATION": "localhost:6379",
-        "OPTIONS": {
-            "DB": 1,
-        }
-        # "BACKEND": "django_redis.cache.RedisCache",
-        # "LOCATION": "redis://localhost:6379/1",
+        # "BACKEND": "redis_cache.RedisCache",
+        # "LOCATION": "localhost:6379",
         # "OPTIONS": {
-        #    "COMPRESSOR": "django_redis.compressors.lzma.LzmaCompressor",
+        #    "DB": 1,
         # }
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/1",
+        "OPTIONS": {
+            "COMPRESSOR": "django_redis.compressors.lzma.LzmaCompressor",
+        }
     }
 }
