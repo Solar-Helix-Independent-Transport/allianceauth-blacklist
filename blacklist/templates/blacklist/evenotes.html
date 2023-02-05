@@ -3,10 +3,10 @@
 {% load humanize %}
 {% load blacklist_tags %}
 {% block tb_block %}
-</br>
+<br>
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <div class="pull-left"><H4 class="text-center">Pilot Log</H4></div>
+        <div class="pull-left"><h4 class="text-center">Pilot Log</h4></div>
         <div class="pull-right">
             {% if add_note %}<a class="btn btn-success modal-add-new" type="button" title="Add New">Add New</a>{% endif %}
             {% if search_char %}<a class="btn btn-default" type="button" title="Set Char" href="/blacklist/set/">{{search_char.character_name}}</a>{% else %}<a class="btn btn-warning" type="button" title="Set Char" href="/blacklist/set/">Select Search Char!</Select></a>{% endif %}
@@ -18,19 +18,21 @@
     <div class="tab-pane active" id="all-notes">
         {% if notes %}
         <div class="container col-xs-12">
-            <H4 class="text-center">All Notes</H4>
-            <table class="table table-striped" width="100%" id="notes-table">
+            <h4 class="text-center">All Notes</h4>
+            <table class="table table-striped" id="notes-table" style="width: 100%;">
                     <thead>
-                        <th class="text-center"></th>
-                        <th class="text-center">Name</th>
-                        <th class="text-center">Date Added</th>
-                        <th class="text-center">Added By</th>
-                        <th>Reason</th>
-                        <th>Added By</th>
-                        <th>Category</th>
-                        <th>Corporation</th>
-                        <th>Alliance</th>
-                        <th></th>
+                        <tr>
+                            <th class="text-center"></th>
+                            <th class="text-center">Name</th>
+                            <th class="text-center">Date Added</th>
+                            <th class="text-center">Added By</th>
+                            <th>Reason</th>
+                            <th>Added By</th>
+                            <th>Category</th>
+                            <th>Corporation</th>
+                            <th>Alliance</th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
                     {% for note in notes %}
@@ -38,7 +40,7 @@
                         <tr>
                             <td class="text-center" style="vertical-align:middle;">{% eve_logo note.eve_id note.eve_name note.eve_catagory 64  %}</td>
                             <td class="text-center" style="vertical-align:middle;"><p>{{ note.eve_name }}
-                                {% if note.eve_catagory == 'character' %}<br><span class="label label-default">{{ note.corporation_name }}</span></br><span class="label label-default">{{ note.alliance_name }}</span>{% endif %}</p>{% if note.blacklisted %}<span class="label label-danger">BLACKLISTED</span>{% endif %}{% if note.restricted %}<span class="label label-warning">RESTRICTED</span>{% endif %}</td>
+                                {% if note.eve_catagory == 'character' %}<br><span class="label label-default">{{ note.corporation_name }}</span><br><span class="label label-default">{{ note.alliance_name }}</span>{% endif %}</p>{% if note.blacklisted %}<span class="label label-danger">BLACKLISTED</span>{% endif %}{% if note.restricted %}<span class="label label-warning">RESTRICTED</span>{% endif %}</td>
                             <td class="text-center" style="vertical-align:middle;"><p>{{ note.added_at|date:"Y-m-d H:i"}}</p><p>{{ note.added_at|naturaltime }}</p></td>
                             <td class="text-center" style="vertical-align:middle;"><p>{{ note.added_by }}</p></td>
                             <td style="vertical-align:middle;"><p style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ note.reason }}</p></td>
@@ -68,7 +70,7 @@
             </table>
         </div>
         {% else %}
-        <div class="alert alert-warning text-center">{% trans "No notes have been added!" %}</div>
+        <div class="alert alert-warning text-center">{% translate "No notes have been added!" %}</div>
         {% endif %}
     </div>
 </div>
@@ -80,7 +82,6 @@
             </div>
             <div id="main-modal-body" class="modal-body"  style="overflow-y:auto;"></div>
 
-            </div>
         </div>
     </div>
 </div>
@@ -88,9 +89,6 @@
 {% endblock %}
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
-	<script>!function(t){function e(t){var e={columns:[],columnsIdxList:[],bootstrap:!1,autoSize:!0,label:"Filter "};if("bootstrap"in t&&"boolean"==typeof t.bootstrap&&(e.bootstrap=t.bootstrap),"autoSize"in t&&"boolean"==typeof t.autoSize&&(e.autoSize=t.autoSize),"label"in t&&"string"==typeof t.label&&(e.label=t.label),"columns"in t)for(var i=0;i<t.columns.length;i++){var n=t.columns[i];if("idx"in n&&"number"==typeof n.idx){var o=n.idx;e.columns[o]={title:null,maxWidth:null,autoSize:!0},e.columnsIdxList.push(o),"title"in n&&"string"==typeof n.title&&(e.columns[o].title=n.title),"maxWidth"in n&&"string"==typeof n.maxWidth&&(e.columns[o].maxWidth=n.maxWidth),"autoSize"in n&&"boolean"==typeof n.autoSize&&(e.columns[o].autoSize=n.autoSize)}}return e}t(document).on("preInit.dt",function(i,n){if("dt"===i.namespace){var o=new t.fn.dataTable.Api(n),a=o.table().node().id,l=o.init();if("filterDropDown"in l){var r=e(l.filterDropDown);if(0!=r.columns.length){var u=o.table().container(),s=a+"_filterWrapper",c=s+" "+(r.bootstrap?"form-inline":"");t(u).prepend('<div id="'+s+'" class="'+c+'">'+r.label+"</div>"),o.columns(r.columnsIdxList).every(function(){var e=this.index(),i=null!==r.columns[e].title?r.columns[e].title:t(this.header()).html();""==i&&(i="column "+(e+1));var n="form-control "+a+"_filterSelect",o=a+"_filterSelect"+e;t("#"+s).append('<select id="'+o+'" class="'+n+'"></select>');var l=t("#"+o).empty().append('<option value="">('+i+")</option>");})}}}}),t(document).on("init.dt",function(i,n){if("dt"===i.namespace){var o=new t.fn.dataTable.Api(n),a=o.table().node().id,l=o.init();if("filterDropDown"in l){var r=e(l.filterDropDown);o.table().container();o.columns(r.columnsIdxList).every(function(){var e=this,i=e.index(),n=t("#"+(a+"_filterSelect"+i));n.on("change",function(){var i=t.fn.dataTable.util.escapeRegex(t(this).val());e.search(i?"^"+i+"$":"",!0,!1).draw()}),e.data().unique().sort().each(function(t,e){""!=t&&n.append('<option value="'+t+'">'+t+"</option>")})})}}})}(jQuery);</script>
-
 {% endblock %}
 {% block extra_script %}
 $(".modal-comments-button").on("click", function() {
@@ -99,7 +97,6 @@ $(".modal-comments-button").on("click", function() {
     var title = this.title;
     url = url.replace('123456', id);
     $.get(url, function(data) {
-        console.log(data);
         modal_body = $("#main-modal-body")[0];
         modal_title = $("#main-modal-title")[0];
         modal_title.innerHTML = title;
@@ -114,7 +111,6 @@ $(".modal-edit-button").on("click", function() {
     var title = this.title;
     url = url.replace('123456', id);
     $.get(url, function(data) {
-        console.log(data);
         modal_body = $("#main-modal-body")[0];
         modal_title = $("#main-modal-title")[0];
         modal_title.innerHTML = title;
@@ -129,7 +125,6 @@ $(".modal-add-comment-button").on("click", function() {
     var title = this.title;
     url = url.replace('123456', id);
     $.get(url, function(data) {
-        console.log(data);
         modal_body = $("#main-modal-body")[0];
         modal_title = $("#main-modal-title")[0];
         modal_title.innerHTML = title;
@@ -158,7 +153,6 @@ $(".modal-add-new").on("click", function() {
             success:search_post});
         }
     function search_post(data) {
-        console.log(data);
         modal_body = $("#main-modal-body")[0];
         modal_title = $("#main-modal-title")[0];
         modal_title.innerHTML = title;
