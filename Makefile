@@ -6,6 +6,7 @@ help:
 	@echo "	 dev 	 install all deps for dev environment
 	@echo "  clean   remove all old packages
 	@echo "  package create pypi package zip
+	@echo "  deploy     Push to PyPi"
 
 clean:
 	rm -rf dist/*
@@ -21,10 +22,7 @@ test:
 
 deploy:
 	pip install twine
-	echo "[pypi]" > ~/.pypirc
-	echo "username=__token__" >> ~/.pypirc
-	echo "password=${pypi-api-token}" >> ~/.pypirc
-	cut -c-20 ~/.pypirc
+	twine upload dist/*
 
 package:
 	python setup.py sdist
