@@ -35,4 +35,4 @@ msgstr "Оновити Персонажа"
 
 #: templates/blacklist/evenotes.html:73
 msgid "No notes have been added!"
-msgstr ""
+msgstr "Ніяких нотатків не було додано!"
