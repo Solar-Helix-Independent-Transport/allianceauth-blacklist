@@ -35,4 +35,4 @@ msgstr "Actualización de personaje"
 
 #: templates/blacklist/evenotes.html:73
 msgid "No notes have been added!"
-msgstr ""
+msgstr "¡No se han agregado notas!"
