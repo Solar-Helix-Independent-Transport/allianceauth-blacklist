@@ -27,7 +27,7 @@ msgstr "Lista negra"
 
 #: templates/blacklist/blacklist.html:37
 msgid "No one is yet to be Blacklisted. You guys are so nice!"
-msgstr ""
+msgstr "Nadie está aún en la lista negra. ¡Son increíbles!"
 
 #: templates/blacklist/edit_note.html:4
 msgid "Character Update"
