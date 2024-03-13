@@ -31,7 +31,7 @@ msgstr "Нікого ще не додали до Чорного Списку. Я
 
 #: templates/blacklist/edit_note.html:4
 msgid "Character Update"
-msgstr ""
+msgstr "Оновити Персонажа"
 
 #: templates/blacklist/evenotes.html:73
 msgid "No notes have been added!"
