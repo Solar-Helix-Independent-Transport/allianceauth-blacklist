@@ -33,7 +33,7 @@ class EveNote(models.Model):
     alliance_name = models.CharField(max_length=500, null=True, default=None)
 
     def __str__(self):
-        return "%s added by: %s" % (self.eve_name, self.added_by)
+        return "{} added by: {}".format(self.eve_name, self.added_by)
 
     class Meta:
         permissions = (
@@ -59,7 +59,7 @@ class EveNoteComment(models.Model):
     restricted = models.BooleanField(default=False)
 
     def __str__(self):
-        return "Comment on: %s added by: %s" % (self.eve_note.eve_name, self.added_by)
+        return "Comment on: {} added by: {}".format(self.eve_note.eve_name, self.added_by)
 
     class Meta:
         permissions = (

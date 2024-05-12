@@ -31,17 +31,17 @@ class BlacklistMenu(MenuItemHook):
 
 
 @hooks.register('menu_item_hook')
-def register_menu():
+def register_menu() -> LogMenu:
     return LogMenu()
 
 
 @hooks.register('menu_item_hook')
-def register_menu():
+def register_menu() -> BlacklistMenu:
     return BlacklistMenu()
 
 
 @hooks.register('url_hook')
-def register_url():
+def register_url() -> UrlHook:
     return UrlHook(urls, 'blacklist', r'^blacklist/')
 
 

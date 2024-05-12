@@ -31,7 +31,7 @@ def blacklist_set_search_character(request, token):
                 "character": char
             }
         )
-        messages.success(request, ("Linked Search Character: {}".format(token.character_name)))
+        messages.success(request, (f"Linked Search Character: {token.character_name}"))
     return redirect("blacklist:note_board")
 
 
