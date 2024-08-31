@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-08 21:44+1000\n"
+"POT-Creation-Date: 2024-05-12 17:28+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,18 +18,153 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: templates/blacklist/base.html:3
+#: blacklist/templates/blacklist/add_note.html:2
+msgid "Please ensure the details below are correct!"
+msgstr ""
+
+#: blacklist/templates/blacklist/base.html:4
+#: blacklist/templates/blacklist/blacklist.html:7
 msgid "Blacklist"
 msgstr ""
 
-#: templates/blacklist/blacklist.html:37
+#: blacklist/templates/blacklist/blacklist.html:16
+#: blacklist/templates/blacklist/evenotes.html:36
+#: blacklist/templates/blacklist/search_name.html:13
+msgid "Name"
+msgstr ""
+
+#: blacklist/templates/blacklist/blacklist.html:17
+#: blacklist/templates/blacklist/evenotes.html:39
+msgid "Reason"
+msgstr ""
+
+#: blacklist/templates/blacklist/blacklist.html:18
+#: blacklist/templates/blacklist/evenotes.html:41
+#: blacklist/templates/blacklist/search_name.html:14
+msgid "Category"
+msgstr ""
+
+#: blacklist/templates/blacklist/blacklist.html:45
+msgid "Restricted Content! Contact"
+msgstr ""
+
+#: blacklist/templates/blacklist/blacklist.html:61
 msgid "No one is yet to be Blacklisted. You guys are so nice!"
 msgstr ""
 
-#: templates/blacklist/edit_note.html:4
+#: blacklist/templates/blacklist/edit_note.html:5
 msgid "Character Update"
 msgstr ""
 
-#: templates/blacklist/evenotes.html:73
+#: blacklist/templates/blacklist/edit_note.html:13
+msgid "Editing Pilot Log"
+msgstr ""
+
+#: blacklist/templates/blacklist/edit_note.html:14
+msgid "Please ensure character below is correct!"
+msgstr ""
+
+#: blacklist/templates/blacklist/evenotes.html:10
+msgid "Pilot Log"
+msgstr ""
+
+#: blacklist/templates/blacklist/evenotes.html:14
+msgid "Add New"
+msgstr ""
+
+#: blacklist/templates/blacklist/evenotes.html:19
+msgid "Select Search Char!"
+msgstr ""
+
+#: blacklist/templates/blacklist/evenotes.html:31
+msgid "All Notes"
+msgstr ""
+
+#: blacklist/templates/blacklist/evenotes.html:37
+msgid "Date Added"
+msgstr ""
+
+#: blacklist/templates/blacklist/evenotes.html:38
+#: blacklist/templates/blacklist/evenotes.html:40
+msgid "Added By"
+msgstr ""
+
+#: blacklist/templates/blacklist/evenotes.html:42
+msgid "Corporation"
+msgstr ""
+
+#: blacklist/templates/blacklist/evenotes.html:43
+msgid "Alliance"
+msgstr ""
+
+#: blacklist/templates/blacklist/evenotes.html:65
+msgid "BLACKLISTED"
+msgstr ""
+
+#: blacklist/templates/blacklist/evenotes.html:68
+msgid "RESTRICTED"
+msgstr ""
+
+#: blacklist/templates/blacklist/evenotes.html:118
 msgid "No notes have been added!"
+msgstr ""
+
+#: blacklist/templates/blacklist/modal_add_comment.html:26
+#: blacklist/templates/blacklist/modal_edit_note.html:26
+msgid "Restricted:"
+msgstr ""
+
+#: blacklist/templates/blacklist/modal_add_comment.html:32
+msgid "Comment:"
+msgstr ""
+
+#: blacklist/templates/blacklist/modal_comments.html:17
+msgid "No Comments!"
+msgstr ""
+
+#: blacklist/templates/blacklist/modal_edit_note.html:32
+msgid "Reason:"
+msgstr ""
+
+#: blacklist/templates/blacklist/modal_edit_note.html:38
+msgid "Blacklist:"
+msgstr ""
+
+#: blacklist/templates/blacklist/no_character_chosen.html:4
+msgid "No Character Selected to authenticate the Search API"
+msgstr ""
+
+#: blacklist/templates/blacklist/no_character_chosen.html:6
+msgid ""
+"Please select a character to search the API. for more information please see "
+"<a href=\"https://github.com/esi/esi-issues/"
+"commit/16df15c8949198273a3ea920398d34537380026e\">This Change by CCP"
+msgstr ""
+
+#: blacklist/templates/blacklist/no_character_chosen.html:8
+msgid "Pick Character and add Token"
+msgstr ""
+
+#: blacklist/templates/blacklist/search_name.html:4
+msgid "ESI Error:"
+msgstr ""
+
+#: blacklist/templates/blacklist/search_name.html:8
+msgid "Pick from below or search again!"
+msgstr ""
+
+#: blacklist/templates/blacklist/search_name.html:25
+msgid "Add"
+msgstr ""
+
+#: blacklist/templates/blacklist/search_name.html:32
+msgid "Nothing found for"
+msgstr ""
+
+#: blacklist/templates/blacklist/search_name.html:38
+msgid "Name to search ESI for:"
+msgstr ""
+
+#: blacklist/templates/blacklist/search_name.html:42
+msgid "Submit"
 msgstr ""

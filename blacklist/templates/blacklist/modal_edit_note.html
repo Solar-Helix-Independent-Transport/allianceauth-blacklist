@@ -1,41 +1,47 @@
 {% load i18n %}
 {% load blacklist_tags %}
 <div>
-{% if note.eve_catagory == 'character' %}
-<div class="text-center col-md-6">
-    <div class="text-center">
-        {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
-        <h4>{{note.eve_name}}</h4>
-    </div>
-</div>{% else %}
-<div class="text-center col-md-6">
-    <div class="text-center">
-        {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
-        <h4>{{note.eve_name}}</h4>
-    </div>
-</div>{% endif %}
-<div class="col-md-6">
-<form action="/blacklist/edit_note/{{note.id}}/" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="note_id" value="{{note.id}}">
-    {% if add_restricted_note %}
-        <h4 class="text-center">
-            <span class="label label-warning"><label for="id_restricted">Restricted:</label>
-            <input type="checkbox" name="restricted" class="form-check" id="id_restricted" {% if note.restricted %}checked{% endif %}></span>
-        </h4>
+    {% if note.eve_catagory == 'character' %}
+        <div class="text-center col-md-6">
+            <div class="text-center">
+                {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
+                <h4>{{ note.eve_name }}</h4>
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center col-md-6">
+            <div class="text-center">
+                {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
+                <h4>{{ note.eve_name }}</h4>
+            </div>
+        </div>
     {% endif %}
-        <p>
-            <label for="id_reason">Reason:</label>
-            <textarea name="reason" cols="40" rows="10" class="form-control" required="" id="id_reason">{{note.reason}}</textarea>
-        </p>
-    {% if add_blacklist %}
-        <h4 class="text-center">
-            <span class="label label-danger"><label for="id_blacklisted">Blacklist:</label>
-            <input type="checkbox" name="blacklisted" class="form-check" id="id_blacklisted" {% if note.blacklisted %}checked{% endif %}></span>
-        </h4>
-    {% endif %}
-    <input type="submit" value="Submit" class="btn btn-primary col col-md-12">
-</form>
-</div>
+    <div class="col-md-6">
+        <form action="/blacklist/edit_note/{{ note.id }}/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="note_id" value="{{ note.id }}" />
+            {% if add_restricted_note %}
+                <h4 class="text-center">
+                    <span class="label label-warning">
+                        <label for="id_restricted">{% translate "Restricted:" %}</label>
+                        <input type="checkbox" name="restricted" class="form-check" id="id_restricted" {% if note.restricted %}checked{% endif %} />
+                    </span>
+                </h4>
+            {% endif %}
+            <p>
+                <label for="id_reason">{% translate "Reason:" %}</label>
+                <textarea name="reason" cols="40" rows="10" class="form-control" required="" id="id_reason">{{note.reason}}</textarea>
+            </p>
+            {% if add_blacklist %}
+                <h4 class="text-center">
+                    <span class="label label-danger">
+                        <label for="id_blacklisted">{% translate "Blacklist:" %}</label>
+                        <input type="checkbox" name="blacklisted" class="form-check" id="id_blacklisted" {% if note.blacklisted %}checked{% endif %} />
+                    </span>
+                </h4>
+            {% endif %}
+            <input type="submit" value="Submit" class="btn btn-primary col col-md-12" />
+        </form>
+    </div>
 </div>
 <div class="clearfix"></div>

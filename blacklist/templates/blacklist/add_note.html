@@ -1,64 +1,64 @@
 {% load blacklist_tags %}
-<p class="text-center col-md-12">Please ensure the details below are correct!</p>
+<p class="text-center col-md-12">{% translate "Please ensure the details below are correct!" %}</p>
 {% if name.category == 'character' %}
-<div class="text-center col-md-12">
-    <div class="text-center col-md-6">
-        {% eve_logo name.id name.name name.category 128 %}
-        <h4>{{name.name}}</h4>
-    </div>
-    <div  class="text-center col-md-6">
-        <div class="text-center col-md-12">
-            {% eve_logo char_info.corporation_id corp_info.name "corporation" 64 %}
-            <h5>{{corp_info.name}}</h5>
-        </div>
-        <div class="text-center col-md-12">
-            {% eve_logo corp_info.alliance_id alliance_info.name "alliance" 64 %}
-            <h5>{{alliance_info.name}}</h5>
-        </div>
-    </div>
-</div>
-<div class="clearfix"></div>
-{% else %}
-<div class="text-center col-md-12">
     <div class="text-center col-md-12">
-        {% eve_logo name.id name.name name.category 128 %}
-        <h4>{{name.name}}</h4>
+        <div class="text-center col-md-6">
+            {% eve_logo name.id name.name name.category 128 %}
+            <h4>{{ name.name }}</h4>
+        </div>
+        <div class="text-center col-md-6">
+            <div class="text-center col-md-12">
+                {% eve_logo char_info.corporation_id corp_info.name "corporation" 64 %}
+                <h5>{{ corp_info.name }}</h5>
+            </div>
+            <div class="text-center col-md-12">
+                {% eve_logo corp_info.alliance_id alliance_info.name "alliance" 64 %}
+                <h5>{{ alliance_info.name }}</h5>
+            </div>
+        </div>
     </div>
-</div>
-<div class="clearfix"></div>
+    <div class="clearfix"></div>
+{% else %}
+    <div class="text-center col-md-12">
+        <div class="text-center col-md-12">
+            {% eve_logo name.id name.name name.category 128 %}
+            <h4>{{ name.name }}</h4>
+        </div>
+    </div>
+    <div class="clearfix"></div>
 {% endif %}
 <div class="col-sm-12">
-<form action="/blacklist/add_note/{{name.id}}/" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="eve_name" value="{{name.name}}" />
-    <input type="hidden" name="eve_cat" value="{{name.category}}" />
-    {% if name.category == 'character' %}
-        <input type="hidden" name="corporation_id" value="{{char_info.corporation_id}}" />
-        <input type="hidden" name="corporation_name" value="{{corp_info.name}}" />
-        {% if alliance_info %}
-        <input type="hidden" name="alliance_id" value="{{corp_info.alliance_id}}" />
-        <input type="hidden" name="alliance_name" value="{{alliance_info.name}}" />
+    <form action="/blacklist/add_note/{{ name.id }}/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="eve_name" value="{{ name.name }}" />
+        <input type="hidden" name="eve_cat" value="{{ name.category }}" />
+        {% if name.category == 'character' %}
+            <input type="hidden" name="corporation_id" value="{{ char_info.corporation_id }}" />
+            <input type="hidden" name="corporation_name" value="{{ corp_info.name }}" />
+            {% if alliance_info %}
+                <input type="hidden" name="alliance_id" value="{{ corp_info.alliance_id }}" />
+                <input type="hidden" name="alliance_name" value="{{ alliance_info.name }}" />
+            {% endif %}
         {% endif %}
-    {% endif %}
-    {% if add_restricted_note %}
-        <h4 class="text-center">
-            {{ form.restricted.errors }}
-            <span class="label label-warning">{{ form.restricted.label_tag }}
-            {{ form.restricted }}</span>
-        </h4>
-    {% endif %}
-    <p>
-        {{ form.reason.errors }}
-        {{ form.reason.label_tag }}
-        {{ form.reason }}
-    </p>
-    {% if add_blacklist %}
-        <h4 class="text-center">
-            {{ form.blacklisted.errors }}
-            <span class="label label-danger">{{ form.blacklisted.label_tag }}
-            {{ form.blacklisted }}</span>
-        </h4>
-    {% endif %}
-    <input type="submit" value="Submit" class="btn col-md-12 btn-primary">
-</form>
+        {% if add_restricted_note %}
+            <h4 class="text-center">
+                {{ form.restricted.errors }}
+                <span class="label label-warning">{{ form.restricted.label_tag }}
+                {{ form.restricted }}</span>
+            </h4>
+        {% endif %}
+        <p>
+            {{ form.reason.errors }}
+            {{ form.reason.label_tag }}
+            {{ form.reason }}
+        </p>
+        {% if add_blacklist %}
+            <h4 class="text-center">
+                {{ form.blacklisted.errors }}
+                <span class="label label-danger">{{ form.blacklisted.label_tag }}
+                {{ form.blacklisted }}</span>
+            </h4>
+        {% endif %}
+        <input type="submit" value="Submit" class="btn col-md-12 btn-primary" />
+    </form>
 </div>

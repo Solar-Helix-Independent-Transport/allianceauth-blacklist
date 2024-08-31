@@ -1,15 +1,25 @@
-{% extends 'blacklist/base.html' %}
+{% extends "blacklist/base.html" %}
 {% load i18n %}
 {% load humanize %}
 {% load blacklist_tags %}
 {% block tb_block %}
-<br>
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        <div class="pull-left"><h4 class="text-center">Pilot Log</h4></div>
-        <div class="pull-right">
-            {% if add_note %}<a class="btn btn-success modal-add-new" type="button" title="Add New">Add New</a>{% endif %}
-            {% if search_char %}<a class="btn btn-default" type="button" title="Set Char" href="/blacklist/set/">{{search_char.character_name}}</a>{% else %}<a class="btn btn-warning" type="button" title="Set Char" href="/blacklist/set/">Select Search Char!</Select></a>{% endif %}
+    <br />
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="pull-left">
+                <h4 class="text-center">{% translate "Pilot Log" %}</h4>
+            </div>
+            <div class="pull-right">
+                {% if add_note %}
+                    <a class="btn btn-success modal-add-new" type="button" title="Add New">{% translate "Add New" %}</a>
+                {% endif %}
+                {% if search_char %}
+                    <a class="btn btn-default" type="button" title="Set Char" href="/blacklist/set/">{{ search_char.character_name }}</a>
+                {% else %}
+                    <a class="btn btn-warning" type="button" title="Set Char" href="/blacklist/set/">{% translate "Select Search Char!" %}
+                    </select>
+                </a>
+            {% endif %}
         </div>
         <div class="clearfix"></div>
     </div>
@@ -17,64 +27,104 @@
 <div class="tab-content">
     <div class="tab-pane active" id="all-notes">
         {% if notes %}
-        <div class="container col-xs-12">
-            <h4 class="text-center">All Notes</h4>
-            <table class="table table-striped" id="notes-table" style="width: 100%;">
+            <div class="container col-xs-12">
+                <h4 class="text-center">{% translate "All Notes" %}</h4>
+                <table class="table table-striped" id="notes-table" style="width: 100%;">
                     <thead>
                         <tr>
                             <th class="text-center"></th>
-                            <th class="text-center">Name</th>
-                            <th class="text-center">Date Added</th>
-                            <th class="text-center">Added By</th>
-                            <th>Reason</th>
-                            <th>Added By</th>
-                            <th>Category</th>
-                            <th>Corporation</th>
-                            <th>Alliance</th>
+                            <th class="text-center">{% translate "Name" %}</th>
+                            <th class="text-center">{% translate "Date Added" %}</th>
+                            <th class="text-center">{% translate "Added By" %}</th>
+                            <th>{% translate "Reason" %}</th>
+                            <th>{% translate "Added By" %}</th>
+                            <th>{% translate "Category" %}</th>
+                            <th>{% translate "Corporation" %}</th>
+                            <th>{% translate "Alliance" %}</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                    {% for note in notes %}
+                        {% for note in notes %}
 
-                        <tr>
-                            <td class="text-center" style="vertical-align:middle;">{% eve_logo note.eve_id note.eve_name note.eve_catagory 64  %}</td>
-                            <td class="text-center" style="vertical-align:middle;"><p>{{ note.eve_name }}
-                                {% if note.eve_catagory == 'character' %}<br><span class="label label-default">{{ note.corporation_name }}</span><br><span class="label label-default">{{ note.alliance_name }}</span>{% endif %}</p>{% if note.blacklisted %}<span class="label label-danger">BLACKLISTED</span>{% endif %}{% if note.restricted %}<span class="label label-warning">RESTRICTED</span>{% endif %}</td>
-                            <td class="text-center" style="vertical-align:middle;"><p>{{ note.added_at|date:"Y-m-d H:i"}}</p><p>{{ note.added_at|naturaltime }}</p></td>
-                            <td class="text-center" style="vertical-align:middle;"><p>{{ note.added_by }}</p></td>
-                            <td style="vertical-align:middle;"><p style="white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ note.reason }}</p></td>
-
-                            <!-- for filtering -->
-                            <td class="text-center" style="vertical-align:middle;">{{ note.added_by }}</td>
-                            <td class="text-center" style="vertical-align:middle;">{{ note.eve_catagory }}</td>
-                            <td class="text-center" style="vertical-align:middle;">{{ note.corporation_name }}</td>
-                            <td class="text-center" style="vertical-align:middle;">{{ note.alliance_name }}</td>
-                            <td class="text-center" style="vertical-align:middle;">
-                                <div class="text-center">
-                                    {% if view_comment or add_comment %}
-                                            <a  type="button" class="btn btn-primary fa fa-comments modal-comments-button" id="{{ note.id }}"  title="Comments for: {{note.eve_name}}"></a>
+                            <tr>
+                                <td class="text-center" style="vertical-align:middle;">
+                                    {% eve_logo note.eve_id note.eve_name note.eve_catagory 64 %}
+                                </td>
+                                <td class="text-center" style="vertical-align:middle;">
+                                    <p>
+                                        {{ note.eve_name }}
+                                        {% if note.eve_catagory == 'character' %}
+                                            <br />
+                                            <span class="label label-default">{{ note.corporation_name }}</span>
+                                            <br />
+                                            <span class="label label-default">{{ note.alliance_name }}</span>
+                                        {% endif %}
+                                    </p>
+                                    {% if note.blacklisted %}
+                                        <span class="label label-danger">{% translate "BLACKLISTED" %}</span>
                                     {% endif %}
-                                    {% if edit_note %}
-                                    <a class="btn btn-info fa fa-edit modal-edit-button" id="{{ note.id }}" type="button" title="Edit: {{note.eve_name}}">
-                                    </a>{% endif %}
-                                    {% if add_comment %}
-                                    <a class="btn btn-primary fa fa-comment modal-add-comment-button" type="button" id="{{ note.id }}" title="Add Comment for: {{note.eve_name}}">
-                                    </a>{% endif %}
-                                </div>
-                            </td>
+                                    {% if note.restricted %}
+                                        <span class="label label-warning">{% translate "RESTRICTED" %}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center" style="vertical-align:middle;">
+                                    <p>{{ note.added_at|date:"Y-m-d H:i" }}</p>
+                                    <p>{{ note.added_at|naturaltime }}</p>
+                                </td>
+                                <td class="text-center" style="vertical-align:middle;">
+                                    <p>{{ note.added_by }}</p>
+                                </td>
+                                <td style="vertical-align:middle;">
+                                    <p style="white-space: pre-wrap;
+                                              white-space: -moz-pre-wrap;
+                                              white-space: -pre-wrap;
+                                              white-space: -o-pre-wrap;
+                                              word-wrap: break-word">{{ note.reason }}</p>
+                                </td>
 
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                                <!-- for filtering -->
+                                <td class="text-center" style="vertical-align:middle;">{{ note.added_by }}</td>
+                                <td class="text-center" style="vertical-align:middle;">{{ note.eve_catagory }}</td>
+                                <td class="text-center" style="vertical-align:middle;">{{ note.corporation_name }}</td>
+                                <td class="text-center" style="vertical-align:middle;">{{ note.alliance_name }}</td>
+                                <td class="text-center" style="vertical-align:middle;">
+                                    <div class="text-center">
+                                        {% if view_comment or add_comment %}
+                                            <a type="button"
+                                               class="btn btn-primary fa fa-comments modal-comments-button"
+                                               id="{{ note.id }}"
+                                               title="Comments for: {{ note.eve_name }}"></a>
+                                        {% endif %}
+                                        {% if edit_note %}
+                                            <a class="btn btn-info fa fa-edit modal-edit-button" id="{{ note.id }}" type="button" title="Edit: {{ note.eve_name }}">
+                                            </a>
+                                        {% endif %}
+                                        {% if add_comment %}
+                                            <a class="btn btn-primary fa fa-comment modal-add-comment-button"
+                                               type="button"
+                                               id="{{ note.id }}"
+                                               title="Add Comment for: {{ note.eve_name }}"></a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
-        <div class="alert alert-warning text-center">{% translate "No notes have been added!" %}</div>
+            <div class="alert alert-warning text-center">{% translate "No notes have been added!" %}</div>
         {% endif %}
     </div>
 </div>
-<div class="modal fade" id="modal-main" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade"
+     id="modal-main"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -91,147 +141,164 @@
     {% include 'bundles/datatables-js.html' %}
 {% endblock %}
 {% block extra_script %}
-$(".modal-comments-button").on("click", function() {
+    $(".modal-comments-button").on("click", function() {
     var url = "{% url 'blacklist:modal_comment' 123456 %}";
     var id = this.id;
     var title = this.title;
     url = url.replace('123456', id);
     $.get(url, function(data) {
-        modal_body = $("#main-modal-body")[0];
-        modal_title = $("#main-modal-title")[0];
-        modal_title.innerHTML = title;
-        modal_body.innerHTML = data;
-        $("#modal-main").modal();
+    modal_body = $("#main-modal-body")[0];
+    modal_title = $("#main-modal-title")[0];
+    modal_title.innerHTML = title;
+    modal_body.innerHTML = data;
+    $("#modal-main").modal();
     });
-});
+    });
 
-$(".modal-edit-button").on("click", function() {
+    $(".modal-edit-button").on("click", function() {
     var url = "{% url 'blacklist:modal_edit' 123456 %}";
     var id = this.id;
     var title = this.title;
     url = url.replace('123456', id);
     $.get(url, function(data) {
-        modal_body = $("#main-modal-body")[0];
-        modal_title = $("#main-modal-title")[0];
-        modal_title.innerHTML = title;
-        modal_body.innerHTML = data;
-        $("#modal-main").modal();
+    modal_body = $("#main-modal-body")[0];
+    modal_title = $("#main-modal-title")[0];
+    modal_title.innerHTML = title;
+    modal_body.innerHTML = data;
+    $("#modal-main").modal();
     });
-});
+    });
 
-$(".modal-add-comment-button").on("click", function() {
+    $(".modal-add-comment-button").on("click", function() {
     var url = "{% url 'blacklist:modal_add_comment' 123456 %}";
     var id = this.id;
     var title = this.title;
     url = url.replace('123456', id);
     $.get(url, function(data) {
-        modal_body = $("#main-modal-body")[0];
-        modal_title = $("#main-modal-title")[0];
-        modal_title.innerHTML = title;
-        modal_body.innerHTML = data;
-        $("#modal-main").modal();
+    modal_body = $("#main-modal-body")[0];
+    modal_title = $("#main-modal-title")[0];
+    modal_title.innerHTML = title;
+    modal_body.innerHTML = data;
+    $("#modal-main").modal();
     });
-});
+    });
 
-$(".modal-add-new").on("click", function() {
+    $(".modal-add-new").on("click", function() {
     var url = "{% url 'blacklist:search_names' %}";
     var id = this.id;
     var title = this.title;
 
     function search(){
-        var url = "{% url 'blacklist:search_names' %}";
-        var title = this.title;
-        search_data = {"name":$("#id_name").val()}
-        var token =  document.getElementsByName('csrfmiddlewaretoken')[1].value
-        data = '<div class="text-center"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>'
-        modal_body.innerHTML = data;
-        $.ajax({
-            headers: {'X-CSRFToken': token},
-            method:"POST",
-            url:url,
-            data:search_data,
-            success:search_post});
-        }
+    var url = "{% url 'blacklist:search_names' %}";
+    var title = this.title;
+    search_data = {"name":$("#id_name").val()}
+    var token =  document.getElementsByName('csrfmiddlewaretoken')[1].value
+    data = '
+    <div class="text-center">
+        <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    '
+    modal_body.innerHTML = data;
+    $.ajax({
+    headers: {'X-CSRFToken': token},
+    method:"POST",
+    url:url,
+    data:search_data,
+    success:search_post});
+    }
     function search_post(data) {
-        modal_body = $("#main-modal-body")[0];
-        modal_title = $("#main-modal-title")[0];
-        modal_title.innerHTML = title;
-        modal_body.innerHTML = data;
-        $("#modal-main").modal();
-        $("#id_name").keypress(function(event){
-            var keycode = (event.keyCode ? event.keyCode : event.which);
-            if(keycode == '13'){
-                event.preventDefault();
-                search()
-            }
-        });
-        $(".search-submit").on("click", function() {
-            modal_body = $("#main-modal-body")[0];
-            search()
-        });
-        $(".add-new-btn").on("click", function() {
-            var url = "{% url 'blacklist:modal_add' 123456 %}";
-            var id = this.id;
-            var title = this.title;
-            url = url.replace('123456', id);
-            modal_body = $("#main-modal-body")[0];
-            var token =  document.getElementsByName('csrfmiddlewaretoken')[1].value
-            data = '<div class="text-center"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>'
-            modal_body.innerHTML = data;
-            $.ajax({
-                headers: {'X-CSRFToken': token},
-                method:"POST",
-                url:url,
-                success:search_post});
-        });
-        $('#searched-names').DataTable({
-            "filterDropDown": {
-                columns: [{
-                    idx: 2
-                        }],
-                bootstrap: true
-             },
-            "columnDefs": [
-                { "searchable": false, "targets": [0,3] },
-                { "sortable": false, "targets": [0,3] }
-            ],
-            "order": [
-                [1, "asc"]
-            ],
-            "pageLength": 10,
-            "responsive" : true
-        });
+    modal_body = $("#main-modal-body")[0];
+    modal_title = $("#main-modal-title")[0];
+    modal_title.innerHTML = title;
+    modal_body.innerHTML = data;
+    $("#modal-main").modal();
+    $("#id_name").keypress(function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if(keycode == '13'){
+    event.preventDefault();
+    search()
+    }
+    });
+    $(".search-submit").on("click", function() {
+    modal_body = $("#main-modal-body")[0];
+    search()
+    });
+    $(".add-new-btn").on("click", function() {
+    var url = "{% url 'blacklist:modal_add' 123456 %}";
+    var id = this.id;
+    var title = this.title;
+    url = url.replace('123456', id);
+    modal_body = $("#main-modal-body")[0];
+    var token =  document.getElementsByName('csrfmiddlewaretoken')[1].value
+    data = '
+    <div class="text-center">
+        <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    '
+    modal_body.innerHTML = data;
+    $.ajax({
+    headers: {'X-CSRFToken': token},
+    method:"POST",
+    url:url,
+    success:search_post});
+    });
+    $('#searched-names').DataTable({
+    "filterDropDown": {
+    columns: [{
+    idx: 2
+    }],
+    bootstrap: true
+    },
+    "columnDefs": [
+    { "searchable": false, "targets": [0,3] },
+    { "sortable": false, "targets": [0,3] }
+    ],
+    "order": [
+    [1, "asc"]
+    ],
+    "pageLength": 10,
+    "responsive" : true
+    });
     }
 
     $.get(url, search_post);
-});
+    });
 
     $(document).ready(function() {
-        $('#notes-table').DataTable({
-            "filterDropDown": {
-					columns: [{
-						idx: 5
-                            },{
-						idx: 6
-                            },{
-						idx: 7
-                            },{
-						idx: 8
-                            }],
-                    bootstrap: true
-            },
-            "columnDefs": [
-                { "searchable": false, "targets": [0] },
-                { "sortable": false, "targets": [0,4,9] },
-                { "visible": false, "targets": [5, 6, 7, 8] }
+    $('#notes-table').DataTable({
+    "filterDropDown": {
+    columns: [{
+    idx: 5
+    },{
+    idx: 6
+    },{
+    idx: 7
+    },{
+    idx: 8
+    }],
+    bootstrap: true
+    },
+    "columnDefs": [
+    { "searchable": false, "targets": [0] },
+    { "sortable": false, "targets": [0,4,9] },
+    { "visible": false, "targets": [5, 6, 7, 8] }
 
-            ],
-            "order": [
-                [1, "asc"]
-            ],
-            "pageLength": 25,
-            "responsive" : true
-        }); });
+    ],
+    "order": [
+    [1, "asc"]
+    ],
+    "pageLength": 25,
+    "responsive" : true
+    }); });
 
-
-{% endblock %}
+{% endblock extra_script %}

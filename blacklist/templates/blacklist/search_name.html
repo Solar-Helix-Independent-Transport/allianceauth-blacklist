@@ -1,42 +1,44 @@
 {% load i18n %}
 {% load blacklist_tags %}
 {% if message %}
-<p class="alert text-center alert-warning">ESI Error: {{message}} </p>
+    <p class="alert text-center alert-warning">{% translate "ESI Error:" %} {{ message }}</p>
 {% endif %}
 
 {% if names %}
-<p class="text-center col-md-12">Pick from below or search again!</p>
-<table class="table dataTable table-hover" id="searched-names">
-    <thead>
-        <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Category</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for name in names %}
-        <tr>
-            <td>{% eve_logo name.id name.name name.category 64  %}</td>
-            <td>{{name.name}}</td>
-            <td>{{name.category|title}}</td>
-            <td><a class="pull-right btn btn-success add-new-btn" type="button" id="{{name.id}}" title="Add {{name.name}}">Add</a></td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+    <p class="text-center col-md-12">{% translate "Pick from below or search again!" %}</p>
+    <table class="table dataTable table-hover" id="searched-names">
+        <thead>
+            <tr>
+                <th></th>
+                <th>{% translate "Name" %}</th>
+                <th>{% translate "Category" %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for name in names %}
+                <tr>
+                    <td>{% eve_logo name.id name.name name.category 64 %}</td>
+                    <td>{{ name.name }}</td>
+                    <td>{{ name.category|title }}</td>
+                    <td>
+                        <a class="pull-right btn btn-success add-new-btn" type="button" id="{{ name.id }}" title="Add {{ name.name }}">{% translate "Add" %}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% elif searched %}
-<p class="alert text-center alert-success">Nothing found for {{searched}} </p>
+    <p class="alert text-center alert-success">{% translate "Nothing found for" %} {{ searched }}</p>
 {% endif %}
 <div class="col-sm-12">
     <form>
         {% csrf_token %}
         <p>
-            <label for="id_name">Name to search ESI for:</label>
-            <input type="text" name="name" maxlength="500" class="form-control" id="id_name">
+            <label for="id_name">{% translate "Name to search ESI for:" %}</label>
+            <input type="text" name="name" maxlength="500" class="form-control" id="id_name" />
         </p>
     </form>
-    <a class="btn btn-primary search-submit col-md-12">Submit</a>
+    <a class="btn btn-primary search-submit col-md-12">{% translate "Submit" %}</a>
 
 </div>

@@ -1,36 +1,40 @@
 {% load i18n %}
 {% load blacklist_tags %}
 <div>
-{% if note.eve_catagory == 'character' %}
-<div class="text-center col-md-6">
-    <div class="text-center">
-        {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
-        <h4>{{note.eve_name}}</h4>
-    </div>
-</div>{% else %}
-<div class="text-center col-md-6">
-    <div class="text-center">
-        {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
-        <h4>{{note.eve_name}}</h4>
-    </div>
-</div>{% endif %}
-<div class="col-md-6">
-<form action="/blacklist/add_comment/{{note.id}}/" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="note_id" value="{{note.id}}">
-    {% if add_restricted_note %}
-        <h4 class="text-center">
-            <span class="label label-warning"><label for="id_restricted">Restricted:</label>
-            <input type="checkbox" name="restricted" class="form-check" id="id_restricted"></span>
-        </h4>
+    {% if note.eve_catagory == 'character' %}
+        <div class="text-center col-md-6">
+            <div class="text-center">
+                {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
+                <h4>{{ note.eve_name }}</h4>
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center col-md-6">
+            <div class="text-center">
+                {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
+                <h4>{{ note.eve_name }}</h4>
+            </div>
+        </div>
     {% endif %}
-    <p>
-        <label for="id_comment">Comment:</label>
-        <textarea name="comment" cols="40" rows="10" class="form-control" required="" id="id_comment"></textarea>
-    </p>
+    <div class="col-md-6">
+        <form action="/blacklist/add_comment/{{ note.id }}/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="note_id" value="{{ note.id }}" />
+            {% if add_restricted_note %}
+                <h4 class="text-center">
+                    <span class="label label-warning">
+                        <label for="id_restricted">{% translate "Restricted:" %}</label>
+                        <input type="checkbox" name="restricted" class="form-check" id="id_restricted" />
+                    </span>
+                </h4>
+            {% endif %}
+            <p>
+                <label for="id_comment">{% translate "Comment:" %}</label>
+                <textarea name="comment" cols="40" rows="10" class="form-control" required="" id="id_comment"></textarea>
+            </p>
 
-    <input type="submit" class="btn btn-primary col-md-12 modal-add-comment-success">
-</form>
-</div>
+            <input type="submit" class="btn btn-primary col-md-12 modal-add-comment-success" />
+        </form>
+    </div>
 </div>
 <div class="clearfix"></div>
