@@ -106,7 +106,7 @@ def blacklist(request):
 @login_required
 @permission_required('blacklist.add_new_eve_note_comments')
 def get_evenote_comments(request, evenote_id=None):
-    view_restricted = request.user.has_perm('view_eve_note_restricted_comments')
+    view_restricted = request.user.has_perm('blacklist.view_eve_note_restricted_comments')
     comments = EveNote.objects.prefetch_related('comment').get(id=evenote_id).comment.all()
     if not view_restricted:
         comments = comments.filter(restricted=False)
