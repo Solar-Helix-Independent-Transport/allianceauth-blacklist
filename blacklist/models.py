@@ -19,6 +19,7 @@ class EveNote(models.Model):
 
     blacklisted = models.BooleanField(default=False)
     restricted = models.BooleanField(default=False)
+    ultra_restricted = models.BooleanField(default=False)
 
     added_by = models.CharField(max_length=500)
     added_at = models.DateTimeField(auto_now_add=True)
@@ -47,7 +48,9 @@ class EveNote(models.Model):
             ('add_to_blacklist', 'Can add to Blacklist'),
             # Higher Level Perms
             ('view_restricted_eve_notes', 'Can View restricted eve notes'),
+            ('view_ultra_restricted_eve_notes', 'Can View ultra_restricted eve notes'),
             ('add_restricted_eve_notes', 'Can Add restricted eve notes'),
+            ('add_ultra_restricted_eve_notes', 'Can Add ultra_restricted eve notes'),
         )
 
 
@@ -57,6 +60,7 @@ class EveNoteComment(models.Model):
     comment = models.TextField()
     comment_date = models.DateTimeField(auto_now_add=True)
     restricted = models.BooleanField(default=False)
+    ultra_restricted = models.BooleanField(default=False)
 
     def __str__(self):
         return "Comment on: {} added by: {}".format(self.eve_note.eve_name, self.added_by)
@@ -66,9 +70,11 @@ class EveNoteComment(models.Model):
             # View
             ('view_eve_note_comments', 'Can view eve note comments'),
             ('view_eve_note_restricted_comments', 'Can view restricted eve note comments'),
+            ('view_eve_note_ultra_restricted_comments', 'Can view ultra restricted eve note comments'),
             # Add
             ('add_new_eve_note_comments', 'Can add comments on eve notes'),
             ('add_new_eve_note_restricted_comments', 'Can add new restricted comments to eve notes'),
+            ('add_new_eve_note_ultra_restricted_comments', 'Can add new ultra restricted comments to eve notes'),
         )
 
 
