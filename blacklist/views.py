@@ -1,4 +1,5 @@
 from allianceauth.eveonline.models import EveCharacter
+from allianceauth.authentication.decorators import permissions_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
@@ -104,7 +105,9 @@ def blacklist(request):
 
 
 @login_required
-@permission_required('blacklist.add_new_eve_note_comments')
+@permissions_required(
+    ("blacklist.add_new_eve_note_comments", "blacklist.view_eve_notes")
+)
 def get_evenote_comments(request, evenote_id=None):
     view_restricted = request.user.has_perm('blacklist.view_eve_note_restricted_comments')
     comments = EveNote.objects.prefetch_related('comment').get(id=evenote_id).comment.all()
