@@ -17,10 +17,9 @@
                data-bs-toggle="modal"
                data-bs-target="#modal-main">{% translate "Add New" %}</a>
         {% endif %}
-    </li>
-    <li>
+
         {% if search_char %}
-            <a class="btn btn-default" type="button" title="Set Char" href="/blacklist/set/">{{ search_char.character_name }}</a>
+            <a class="btn btn-secondary" type="button" title="Set Char" href="/blacklist/set/">{{ search_char.character_name }}</a>
         {% else %}
             <a class="btn btn-warning" type="button" title="Set Char" href="/blacklist/set/">{% translate "Select Search Char!" %}</a>
         {% endif %}
@@ -28,96 +27,93 @@
 {% endblock %}
 
 {% block tb_block %}
-    <div class="">
-        <div class="" id="all-notes">
-            <div class="container col-xs-12">
-                <table class="table table-striped" id="notes-table" style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th class="text-center"></th>
-                            <th class="text-center">{% translate "Name" %}</th>
-                            <th class="text-center">{% translate "Date Added" %}</th>
-                            <th class="text-center">{% translate "Added By" %}</th>
-                            <th>{% translate "Reason" %}</th>
-                            <th>{% translate "Category" %}</th>
-                            <th>{% translate "Corporation" %}</th>
-                            <th>{% translate "Alliance" %}</th>
-                            <th>{% translate "Actions" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% comment %} {% for note in notes %}
-                            <tr>
-                                <td class="text-center" style="vertical-align:middle;">
-                                    {% eve_logo note.eve_id note.eve_name note.eve_catagory 64 %}
-                                </td>
-                                <td class="text-center" style="vertical-align:middle;">
-                                    <p>
-                                        {{ note.eve_name }}
-                                        {% if note.eve_catagory == 'character' %}
-                                            <br />
-                                            <span class="badge badge-default">{{ note.corporation_name }}</span>
-                                            <br />
-                                            <span class="badge badge-default">{{ note.alliance_name }}</span>
-                                        {% endif %}
-                                    </p>
-                                    {% if note.blacklisted %}
-                                        <span class="badge badge-danger">{% translate "BLACKLISTED" %}</span>
-                                    {% endif %}
-                                    {% if note.restricted %}
-                                        <span class="badge badge-warning">{% translate "RESTRICTED" %}</span>
-                                    {% endif %}
-                                    {% if note.ultra_restricted %}
-                                        <span class="badge badge-warning">{% translate "ULTRA RESTRICTED" %}</span>
-                                    {% endif %}
-                                </td>
-                                <td class="text-center" style="vertical-align:middle;">
-                                    <p>{{ note.added_at|date:"Y-m-d H:i" }}</p>
-                                    <p>{{ note.added_at|naturaltime }}</p>
-                                </td>
-                                <td class="text-center" style="vertical-align:middle;">
-                                    <p>{{ note.added_by }}</p>
-                                </td>
-                                <td style="vertical-align:middle;">
-                                    <p style="white-space: pre-wrap;
-                                                white-space: -moz-pre-wrap;
-                                                white-space: -pre-wrap;
-                                                white-space: -o-pre-wrap;
-                                                word-wrap: break-word">{{ note.reason }}</p>
-                                </td>
+    <div id="all-notes">
+        <table class="table table-striped" id="notes-table" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th class="text-center"></th>
+                    <th class="text-center">{% translate "Name" %}</th>
+                    <th class="text-center">{% translate "Date Added" %}</th>
+                    <th class="text-center">{% translate "Added By" %}</th>
+                    <th>{% translate "Reason" %}</th>
+                    <th>{% translate "Category" %}</th>
+                    <th>{% translate "Corporation" %}</th>
+                    <th>{% translate "Alliance" %}</th>
+                    <th>{% translate "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% comment %} {% for note in notes %}
+                    <tr>
+                        <td class="text-center" style="vertical-align:middle;">
+                            {% eve_logo note.eve_id note.eve_name note.eve_catagory 64 %}
+                        </td>
+                        <td class="text-center" style="vertical-align:middle;">
+                            <p>
+                                {{ note.eve_name }}
+                                {% if note.eve_catagory == 'character' %}
+                                    <br />
+                                    <span class="badge badge-default">{{ note.corporation_name }}</span>
+                                    <br />
+                                    <span class="badge badge-default">{{ note.alliance_name }}</span>
+                                {% endif %}
+                            </p>
+                            {% if note.blacklisted %}
+                                <span class="badge badge-danger">{% translate "BLACKLISTED" %}</span>
+                            {% endif %}
+                            {% if note.restricted %}
+                                <span class="badge badge-warning">{% translate "RESTRICTED" %}</span>
+                            {% endif %}
+                            {% if note.ultra_restricted %}
+                                <span class="badge badge-warning">{% translate "ULTRA RESTRICTED" %}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center" style="vertical-align:middle;">
+                            <p>{{ note.added_at|date:"Y-m-d H:i" }}</p>
+                            <p>{{ note.added_at|naturaltime }}</p>
+                        </td>
+                        <td class="text-center" style="vertical-align:middle;">
+                            <p>{{ note.added_by }}</p>
+                        </td>
+                        <td style="vertical-align:middle;">
+                            <p style="white-space: pre-wrap;
+                                        white-space: -moz-pre-wrap;
+                                        white-space: -pre-wrap;
+                                        white-space: -o-pre-wrap;
+                                        word-wrap: break-word">{{ note.reason }}</p>
+                        </td>
 
-                                <!-- for filtering -->
-                                <td class="text-center" style="vertical-align:middle;">{{ note.added_by }}</td>
-                                <td class="text-center" style="vertical-align:middle;">{{ note.eve_catagory }}</td>
-                                <td class="text-center" style="vertical-align:middle;">{{ note.corporation_name }}</td>
-                                <td class="text-center" style="vertical-align:middle;">{{ note.alliance_name }}</td>
-                                <td class="text-center" style="vertical-align:middle;">
-                                    <div class="text-center">
-                                        {% if view_comment or add_comment %}
-                                            <a type="button"
-                                                class="btn btn-primary fa fa-comments modal-comments-button"
-                                                id="{{ note.id }}"
-                                                title="Comments for: {{ note.eve_name }}"></a>
-                                        {% endif %}
-                                        {% if edit_note %}
-                                            <a class="btn btn-info fa fa-edit modal-edit-button" id="{{ note.id }}" type="button" title="Edit: {{ note.eve_name }}">
-                                            </a>
-                                        {% endif %}
-                                        {% if add_comment %}
-                                            <a class="btn btn-primary fa fa-comment modal-add-comment-button"
-                                                type="button"
-                                                id="{{ note.id }}"
-                                                title="Add Comment for: {{ note.eve_name }}"></a>
-                                        {% endif %}
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %} {% endcomment %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                        <!-- for filtering -->
+                        <td class="text-center" style="vertical-align:middle;">{{ note.added_by }}</td>
+                        <td class="text-center" style="vertical-align:middle;">{{ note.eve_catagory }}</td>
+                        <td class="text-center" style="vertical-align:middle;">{{ note.corporation_name }}</td>
+                        <td class="text-center" style="vertical-align:middle;">{{ note.alliance_name }}</td>
+                        <td class="text-center" style="vertical-align:middle;">
+                            <div class="text-center">
+                                {% if view_comment or add_comment %}
+                                    <a type="button"
+                                        class="btn btn-primary fa fa-comments modal-comments-button"
+                                        id="{{ note.id }}"
+                                        title="Comments for: {{ note.eve_name }}"></a>
+                                {% endif %}
+                                {% if edit_note %}
+                                    <a class="btn btn-info fa fa-edit modal-edit-button" id="{{ note.id }}" type="button" title="Edit: {{ note.eve_name }}">
+                                    </a>
+                                {% endif %}
+                                {% if add_comment %}
+                                    <a class="btn btn-primary fa fa-comment modal-add-comment-button"
+                                        type="button"
+                                        id="{{ note.id }}"
+                                        title="Add Comment for: {{ note.eve_name }}"></a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %} {% endcomment %}
+            </tbody>
+        </table>
     </div>
+
     <div class="modal fade modal-xl" id="modal-main" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -132,8 +128,8 @@
             </div>
         </div>
     </div>
-
 {% endblock %}
+
 {% block extra_javascript %}
     {% include 'bundles/datatables-js-bs5.html' %}
     {% include 'bundles/filterdropdown-js.html' %}

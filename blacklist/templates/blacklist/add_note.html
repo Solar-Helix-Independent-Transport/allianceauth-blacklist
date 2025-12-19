@@ -4,7 +4,7 @@
 
 <p class="text-center">{% translate "Please ensure the details below are correct!" %}</p>
 {% if name.category == 'character' %}
-    <div class="text-center">
+    <div class="text-center clearfix">
         <div class="text-center">
             {% eve_logo name.id name.name name.category 128 %}
             <h4>{{ name.name }}</h4>
@@ -20,15 +20,13 @@
             </div>
         </div>
     </div>
-    <div class="clearfix"></div>
 {% else %}
-    <div class="text-center">
+    <div class="text-center clearfix">
         <div class="text-center">
             {% eve_logo name.id name.name name.category 128 %}
             <h4>{{ name.name }}</h4>
         </div>
     </div>
-    <div class="clearfix"></div>
 {% endif %}
 <hr>
 <div class="w-100">

@@ -13,7 +13,7 @@
     <h1 class="text-center col-md-12">{% translate "Editing Pilot Log" %}</h1>
     <p class="text-center col-md-12">{% translate "Please ensure character below is correct!" %}</p>
     {% if note.eve_catagory == 'character' %}
-        <div class="text-center col-md-offset-3 col-md-6">
+        <div class="text-center col-md-offset-3 col-md-6 clearfix">
             <div class="text-center col-md-6">
                 {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
                 <h4>{{ note.eve_name }}</h4>
@@ -29,15 +29,13 @@
                 </div>
             </div>
         </div>
-        <div class="clearfix"></div>
     {% else %}
-        <div class="text-center col-md-offset-3 col-md-6">
+        <div class="text-center col-md-offset-3 col-md-6 clearfix">
             <div class="text-center col-md-12">
                 {% evename_img note.eve_id note.eve_name note.eve_catagory 128 %}
                 <h4>{{ note.eve_name }}</h4>
             </div>
         </div>
-        <div class="clearfix"></div>
     {% endif %}
     <div class="col-sm-offset-3 col-sm-6">
         <form action="/blacklist/edit_note/{{ note.id }}/" method="post">
