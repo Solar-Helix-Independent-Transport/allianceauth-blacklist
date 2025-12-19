@@ -1,22 +1,22 @@
 from dataclasses import dataclass
 from typing import Any
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
+
+from allianceauth.authentication.decorators import permissions_required
 from allianceauth.authentication.models import CharacterOwnership
 from allianceauth.eveonline.models import EveCharacter
-from allianceauth.authentication.decorators import permissions_required
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib import messages
+from allianceauth.services.hooks import get_extension_logger
+from esi.decorators import token_required
 from esi.models import Token
 
+from . import models, providers
+from .forms import AddComment, EveNoteForm
 from .models import EveNote, EveNoteComment
-from .forms import EveNoteForm, AddComment
-from django.http import HttpResponse
-from django.template.loader import render_to_string
-from esi.decorators import token_required
-
-from . import providers, models
-
-from allianceauth.services.hooks import get_extension_logger
 
 logger = get_extension_logger(__name__)
 
@@ -35,7 +35,8 @@ def blacklist_set_search_character(request, token):
                 "character": char
             }
         )
-        messages.success(request, (f"Linked Search Character: {token.character_name}"))
+        messages.success(
+            request, (f"Linked Search Character: {token.character_name}"))
     return redirect("blacklist:note_board")
 
 
@@ -52,8 +53,10 @@ def note_board(request):
     add_perms = request.user.has_perm('blacklist.add_basic_eve_notes')
     add_global_perms = request.user.has_perm('blacklist.add_new_eve_notes')
     add_blacklist_perms = request.user.has_perm('blacklist.add_to_blacklist')
-    add_restricted_perms = request.user.has_perm('blacklist.add_restricted_eve_notes')
-    add_ultra_restricted_perms = request.user.has_perm('blacklist.add_ultra_restricted_eve_notes')
+    add_restricted_perms = request.user.has_perm(
+        'blacklist.add_restricted_eve_notes')
+    add_ultra_restricted_perms = request.user.has_perm(
+        'blacklist.add_ultra_restricted_eve_notes')
     view_perms = request.user.has_perm('blacklist.view_basic_eve_notes')
     view_global_perms = request.user.has_perm('blacklist.view_eve_notes')
 
@@ -105,7 +108,8 @@ def note_board(request):
 @permission_required('blacklist.view_eve_blacklist')
 def blacklist(request):
     blacklist = EveNote.objects.filter(blacklisted=True)
-    add_restricted_perms = request.user.has_perm('blacklist.add_restricted_eve_notes')
+    add_restricted_perms = request.user.has_perm(
+        'blacklist.add_restricted_eve_notes')
 
     context = {
         'blacklist': blacklist,
@@ -120,8 +124,10 @@ def blacklist(request):
     ("blacklist.add_new_eve_note_comments", "blacklist.view_eve_notes")
 )
 def get_evenote_comments(request, evenote_id=None):
-    view_restricted = request.user.has_perm('blacklist.view_eve_note_restricted_comments')
-    comments = EveNote.objects.prefetch_related('comment').get(id=evenote_id).comment.all()
+    view_restricted = request.user.has_perm(
+        'blacklist.view_eve_note_restricted_comments')
+    comments = EveNote.objects.prefetch_related(
+        'comment').get(id=evenote_id).comment.all()
     if not view_restricted:
         comments = comments.filter(restricted=False)
     ctx = {
@@ -164,7 +170,8 @@ def get_add_evenote(request, eve_id=None):
     add_perms = request.user.has_perm('blacklist.add_basic_eve_notes')
     add_global_perms = request.user.has_perm('blacklist.add_new_eve_notes')
     add_blacklist_perms = request.user.has_perm('blacklist.add_to_blacklist')
-    add_restricted_perms = request.user.has_perm('blacklist.add_restricted_eve_notes')
+    add_restricted_perms = request.user.has_perm(
+        'blacklist.add_restricted_eve_notes')
 
     message = None
     if not (add_perms or add_global_perms):
@@ -253,7 +260,8 @@ def search_names(request):
     add_perms = request.user.has_perm('blacklist.add_basic_eve_notes')
     add_global_perms = request.user.has_perm('blacklist.add_new_eve_notes')
     add_blacklist_perms = request.user.has_perm('blacklist.add_to_blacklist')
-    add_restricted_perms = request.user.has_perm('blacklist.add_restricted_eve_notes')
+    add_restricted_perms = request.user.has_perm(
+        'blacklist.add_restricted_eve_notes')
 
     if not (add_perms or add_global_perms):
         messages.info(request, "No Permissions")
@@ -370,7 +378,7 @@ def add_note(request, eve_id=None):
                 ultra_restricted = form.cleaned_data['ultra_restricted']
                 blacklisted = form.cleaned_data['blacklisted']
                 all_linked_chars = form.cleaned_data['all_linked_chars']
-                
+
                 if all_linked_chars and request.POST.get('eve_cat') == "character":
                     try:
                         char: EveCharacter = EveCharacter.objects.get(
@@ -400,20 +408,24 @@ def add_note(request, eve_id=None):
                                     eve_id=c.character_id
                                 )
                             names.append(c.character_name)
-                        messages.info(request, f"Added {len(all_chars)} linked notes. {', '.join(names)}")
+                        messages.info(
+                            request, f"Added {len(all_chars)} linked notes. {', '.join(names)}")
                     except EveCharacter.DoesNotExist:
-                        messages.warning(request, "No Linked Characters Found.")
+                        messages.warning(
+                            request, "No Linked Characters Found.")
                     except Exception as e:
                         logger.exception(e)
-                        messages.warning(request, "Unable to find linked characters")
-                    
+                        messages.warning(
+                            request, "Unable to find linked characters")
+
                 EveNote.objects.create(
                     eve_name=request.POST.get('eve_name'),
                     eve_catagory=request.POST.get('eve_cat'),
                     alliance_id=request.POST.get('alliance_id', None),
                     alliance_name=request.POST.get('alliance_name', None),
                     corporation_id=request.POST.get('corporation_id', None),
-                    corporation_name=request.POST.get('corporation_name', None),
+                    corporation_name=request.POST.get(
+                        'corporation_name', None),
                     blacklisted=blacklisted,
                     restricted=restricted,
                     ultra_restricted=ultra_restricted,
@@ -460,5 +472,3 @@ def edit_note(request, note_id=None):
         }
 
         return render(request, 'blacklist/edit_note.html', context)
-
-

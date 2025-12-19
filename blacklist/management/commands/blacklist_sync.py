@@ -1,5 +1,7 @@
 from django.core.management.base import BaseCommand
+
 from allianceauth.authentication.models import State
+
 from blacklist import app_settings
 from blacklist.models import EveNote
 
@@ -8,14 +10,19 @@ class Command(BaseCommand):
     help = 'Sync existing members from the Blacklist State into the Blacklist State.'
 
     def handle(self, *args, **options):
-        self.stdout.write("Syncing existing members from the Blacklist State. This may be slow if you have thousands.")
+        self.stdout.write(
+            "Syncing existing members from the Blacklist State. This may be slow if you have thousands.")
         blacklist_name = app_settings.BLACKLIST_STATE_NAME
-        member_chars = State.objects.get(name=blacklist_name).member_characters.all()
-        member_corps = State.objects.get(name=blacklist_name).member_corporations.all()
-        member_allis = State.objects.get(name=blacklist_name).member_alliances.all()
+        member_chars = State.objects.get(
+            name=blacklist_name).member_characters.all()
+        member_corps = State.objects.get(
+            name=blacklist_name).member_corporations.all()
+        member_allis = State.objects.get(
+            name=blacklist_name).member_alliances.all()
 
         for c in member_chars:
-            en = EveNote.objects.filter(eve_id=c.character_id, blacklisted=True)
+            en = EveNote.objects.filter(
+                eve_id=c.character_id, blacklisted=True)
 
             if not en.exists():
                 EveNote.objects.create(blacklisted=True,
@@ -34,7 +41,8 @@ class Command(BaseCommand):
                 self.stdout.write(f"Blacklist Note Exists for Character: {c}")
 
         for c in member_corps:
-            en = EveNote.objects.filter(eve_id=c.corporation_id, blacklisted=True)
+            en = EveNote.objects.filter(
+                eve_id=c.corporation_id, blacklisted=True)
 
             if not en.exists():
                 EveNote.objects.create(blacklisted=True,

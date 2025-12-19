@@ -1,6 +1,6 @@
 from esi.openapi_clients import ESIClientProvider
 
-from . import __title__, __version__, __url__
+from . import __title__, __url__, __version__
 
 esi = ESIClientProvider(
     compatibility_date="",
