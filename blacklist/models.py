@@ -1,5 +1,4 @@
 from collections import defaultdict
-
 from pyexpat import model
 
 from django.contrib.auth.models import User
