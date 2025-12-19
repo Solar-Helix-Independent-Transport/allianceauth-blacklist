@@ -3,14 +3,14 @@
     {{ note.eve_name }}
     {% if note.eve_catagory == 'character' %}
         <br />
-        <span class="badge bg-default">{{ note.corporation_name }}</span>
+        <span class="badge text-bg-secondary">{{ note.corporation_name }}</span>
         <br />
-        <span class="badge bg-default">{{ note.alliance_name }}</span>
+        <span class="badge text-bg-secondary">{{ note.alliance_name }}</span>
     {% endif %}
 </p>
 {% if note.blacklisted %}
-    <span class="badge bg-danger">{% translate "BLACKLISTED" %}</span>
+    <span class="badge text-bg-danger">{% translate "BLACKLISTED" %}</span>
 {% endif %}
 {% if note.restricted %}
-    <span class="badge bg-danger">{% translate "RESTRICTED" %}</span>
+    <span class="badge text-bg-danger">{% translate "RESTRICTED" %}</span>
 {% endif %}
