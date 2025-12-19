@@ -1,0 +1,19 @@
+
+<div class="text-center">
+    {% if view_comment or add_comment %}
+        <a type="button"
+            class="btn btn-primary fa fa-comments modal-comments-button"
+            id="{{ note.id }}"
+            title="Comments for: {{ note.eve_name }}"></a>
+    {% endif %}
+    {% if edit_note %}
+        <a class="btn btn-info fa fa-edit modal-edit-button" id="{{ note.id }}" type="button" title="Edit: {{ note.eve_name }}">
+        </a>
+    {% endif %}
+    {% if add_comment %}
+        <a class="btn btn-primary fa fa-comment modal-add-comment-button"
+            type="button"
+            id="{{ note.id }}"
+            title="Add Comment for: {{ note.eve_name }}"></a>
+    {% endif %}
+</div>

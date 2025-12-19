@@ -12,26 +12,28 @@
                 <th></th>
                 <th>{% translate "Name" %}</th>
                 <th>{% translate "Category" %}</th>
-                <th></th>
+                <th>{% translate "Actions" %}</th>
             </tr>
         </thead>
         <tbody>
             {% for name in names %}
                 <tr>
-                    <td>{% eve_logo name.id name.name name.category 64 %}</td>
-                    <td>{{ name.name }}</td>
-                    <td>{{ name.category|title }}</td>
-                    <td>
-                        <a class="pull-right btn btn-success add-new-btn" type="button" id="{{ name.id }}" title="Add {{ name.name }}">{% translate "Add" %}</a>
+                    <td class="align-middle text-end">{% eve_logo name.id name.name name.category 32 %}</td>
+                    <td class="align-middle">{{ name.name }}</td>
+                    <td class="align-middle">{{ name.category|title }}</td>
+                    <td class="align-middle text-right">
+                        <a class="btn btn-success add-new-btn" type="button" id="{{ name.id }}" title="Add {{ name.name }}">{% translate "Add" %}</a>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    <hr>
 {% elif searched %}
     <p class="alert text-center alert-success">{% translate "Nothing found for" %} {{ searched }}</p>
+    <hr>
 {% endif %}
-<div class="col-sm-12">
+<div class="w-100">
     <form>
         {% csrf_token %}
         <p>
@@ -39,6 +41,5 @@
             <input type="text" name="name" maxlength="500" class="form-control" id="id_name" />
         </p>
     </form>
-    <a class="btn btn-primary search-submit col-md-12">{% translate "Submit" %}</a>
-
+    <a class="btn btn-primary col-md-12" id="search-submit">{% translate "Submit" %}</a>
 </div>

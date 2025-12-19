@@ -111,17 +111,25 @@ class BlacklistFilter(FilterBase):
                                                   eve_catagory='corporation').values('eve_id')
         blacklisted_alli = EveNote.objects.filter(blacklisted=True,
                                                   eve_catagory='alliance').values('eve_id')
-        co = CharacterOwnership.objects.filter((
-            Q(character__character_id__in=blacklisted_char) |
-            Q(character__corporation_id__in=blacklisted_corp) |
-            Q(character__alliance_id__in=blacklisted_alli)),
-            user__in=users).values('user__id', 'character__character_name')
+        co = CharacterOwnership.objects.filter(
+            (
+                Q(character__character_id__in=blacklisted_char) |
+                Q(character__corporation_id__in=blacklisted_corp) |
+                Q(character__alliance_id__in=blacklisted_alli)
+            ),
+            user__in=users
+        ).values(
+            'user__id',
+            'character__character_name'
+        )
 
         chars = defaultdict(list)
         for c in co:
             chars[c['user__id']].append(c['character__character_name'])
 
-        output = defaultdict(lambda: {"message": "", "check": True})
+        output = defaultdict(
+            lambda: {"message": "", "check": True}
+        )
         for c, char_list in chars.items():
             output[c] = {"message": ", ".join(char_list), "check": False}
         return output

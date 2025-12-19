@@ -1,17 +1,19 @@
+{% load i18n %}
 {% load blacklist_tags %}
-<p class="text-center col-md-12">{% translate "Please ensure the details below are correct!" %}</p>
+{% load django_bootstrap5 %}
+<p class="text-center">{% translate "Please ensure the details below are correct!" %}</p>
 {% if name.category == 'character' %}
-    <div class="text-center col-md-12">
-        <div class="text-center col-md-6">
+    <div class="text-center">
+        <div class="text-center">
             {% eve_logo name.id name.name name.category 128 %}
             <h4>{{ name.name }}</h4>
         </div>
-        <div class="text-center col-md-6">
-            <div class="text-center col-md-12">
+        <div class="text-center">
+            <div class="text-center">
                 {% eve_logo char_info.corporation_id corp_info.name "corporation" 64 %}
                 <h5>{{ corp_info.name }}</h5>
             </div>
-            <div class="text-center col-md-12">
+            <div class="text-center">
                 {% eve_logo corp_info.alliance_id alliance_info.name "alliance" 64 %}
                 <h5>{{ alliance_info.name }}</h5>
             </div>
@@ -19,15 +21,16 @@
     </div>
     <div class="clearfix"></div>
 {% else %}
-    <div class="text-center col-md-12">
-        <div class="text-center col-md-12">
+    <div class="text-center">
+        <div class="text-center">
             {% eve_logo name.id name.name name.category 128 %}
             <h4>{{ name.name }}</h4>
         </div>
     </div>
     <div class="clearfix"></div>
 {% endif %}
-<div class="col-sm-12">
+<hr>
+<div class="w-100">
     <form action="/blacklist/add_note/{{ name.id }}/" method="post">
         {% csrf_token %}
         <input type="hidden" name="eve_name" value="{{ name.name }}" />
@@ -40,25 +43,32 @@
                 <input type="hidden" name="alliance_name" value="{{ alliance_info.name }}" />
             {% endif %}
         {% endif %}
+        {{ form.reason.errors }}
+        {% bootstrap_field form.reason %}
         {% if add_restricted_note %}
-            <h4 class="text-center">
-                {{ form.restricted.errors }}
-                <span class="label label-warning">{{ form.restricted.label_tag }}
-                {{ form.restricted }}</span>
-            </h4>
+            {{ form.restricted.errors }}
+            <span class="text-warning">
+                {% bootstrap_field form.restricted %}
+            </span>
         {% endif %}
-        <p>
-            {{ form.reason.errors }}
-            {{ form.reason.label_tag }}
-            {{ form.reason }}
-        </p>
+        {% if add_ultra_restricted_note %}
+            {{ form.ultra_restricted.errors }}
+            <span class="text-warning">
+                {% bootstrap_field form.ultra_restricted %}
+            </span>
+        {% endif %}
         {% if add_blacklist %}
-            <h4 class="text-center">
-                {{ form.blacklisted.errors }}
-                <span class="label label-danger">{{ form.blacklisted.label_tag }}
-                {{ form.blacklisted }}</span>
-            </h4>
+            {{ form.blacklisted.errors }}
+            <span class="text-danger">
+                {% bootstrap_field form.blacklisted %}
+            </span>
         {% endif %}
-        <input type="submit" value="Submit" class="btn col-md-12 btn-primary" />
+        {{ form.blacklisted.errors }}
+        {% if name.category == 'character' %}
+            <span class="text-info">
+                {% bootstrap_field form.all_linked_chars %}
+            </span>
+        {% endif %}
+        <input type="submit" value="Submit" class="btn w-100 btn-primary" />
     </form>
 </div>

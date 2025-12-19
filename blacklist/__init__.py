@@ -3,3 +3,4 @@ Integration with Alliance Auth's State System, creates an maintains a Blackliste
 """
 __version__ = "0.2.0"
 __title__ = "Blacklist"
+__url__ = "https://github.com/Solar-Helix-Independent-Transport/allianceauth-blacklist"
