@@ -134,7 +134,8 @@
     {% include 'bundles/datatables-js-bs5.html' %}
     {% include 'bundles/filterdropdown-js.html' %}
     <script>
-        var token =  document.getElementsByName('csrfmiddlewaretoken')[1].value
+        const token = document.getElementsByName('csrfmiddlewaretoken')[1].value;
+
         // Elems
         const searchModal = new bootstrap.Modal(document.getElementById('modal-main'))
         const addNewButton = document.getElementById('add-new')
@@ -156,24 +157,24 @@
         const modal_add_url = "{% url 'blacklist:modal_add' 923456789 %}";
 
         // utils
-        function replaceIDInURL(url, id){
+        const replaceIDInURL = (url, id) => {
             return url.replace('923456789', id);
         };
 
-        function updateModal(title, body){
+        const updateModal = (title, body) => {
             const modalTitle = document.getElementById('main-modal-title')
             const modalBody = document.getElementById('main-modal-body')
             modalTitle.innerHTML = title;
             modalBody.innerHTML = body;
         };
 
-        function getHTML(response){
+        const getHTML = (response) => {
             const parser = new DOMParser()
             return parser.parseFromString(response.body, "text/html")
         };
 
-        function search(name){
-            let search_data = new FormData();
+        const search = (name) => {
+            const search_data = new FormData();
             search_data.append("name", name);
             updateModal(
                 `Searching for ${name}...`,
@@ -200,7 +201,7 @@
             );
         };
 
-        function addNote(id){
+        const addNote = (id) => {
             updateModal(
                 `Collecting Detail...`,
                 loaderSpinner
@@ -224,7 +225,7 @@
             );
         };
 
-        function setupSearch(){
+        const setupSearch = () => {
             const token = document.getElementsByName('csrfmiddlewaretoken')[1].value;
             const searchButton = document.getElementById('search-submit');
             searchButton.addEventListener(
@@ -243,7 +244,7 @@
                     },
                     false
                 );
-            };
+            }
             console.log("find table");
             $("#searched-names").DataTable({
                 filterDropDown: {
@@ -263,15 +264,14 @@
                 pageLength: 10,
                 responsive: true,
             });
-
         };
 
-        function search_post(title, body) {
+        const search_post = (title, body) => {
             updateModal(
                 title,
                 body
             );
-        }
+        };
 
         // Main
         addNewButton.addEventListener(
@@ -285,7 +285,7 @@
                     search_url
                 ).then(
                     response => {return response.text()}
-                ).then( text => {
+                ).then(text => {
                         updateModal(
                             "Search",
                             text
@@ -295,32 +295,33 @@
                 );
             }
         );
+
         $(document).ready(function () {
             $("#notes-table").DataTable({
                 serverSide: true,
                 ajax: '/blacklist/api/datatables_server_notes/',
                 filterDropDown: {
-                columns: [
-                    {
-                        idx: 3,
-                    },
-                    {
-                        idx: 5,
-                    },
-                    {
-                        idx: 6,
-                    },
-                    {
-                        idx: 7,
-                    },
-                ],
-                bootstrap: true,
-                bootstrap_version: 5
+                    columns: [
+                        {
+                            idx: 3,
+                        },
+                        {
+                            idx: 5,
+                        },
+                        {
+                            idx: 6,
+                        },
+                        {
+                            idx: 7,
+                        },
+                    ],
+                    bootstrap: true,
+                    bootstrap_version: 5
                 },
                 columnDefs: [
-                { searchable: false, targets: [0] },
-                { sortable: false, targets: [0, 4] },
-                { visible: false, targets: [5, 6, 7] },
+                    { searchable: false, targets: [0] },
+                    { sortable: false, targets: [0, 4] },
+                    { visible: false, targets: [5, 6, 7] },
                 ],
                 order: [[1, "asc"]],
                 pageLength: 25,
