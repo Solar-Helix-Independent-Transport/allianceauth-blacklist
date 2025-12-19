@@ -3,7 +3,7 @@ from esi.openapi_clients import ESIClientProvider
 from . import __title__, __url__, __version__
 
 esi = ESIClientProvider(
-    compatibility_date="",
+    compatibility_date="2025-12-16",
     ua_appname=__title__,
     ua_url=__url__,
     ua_version=__version__,
@@ -13,6 +13,6 @@ esi = ESIClientProvider(
         "GetCorporationsCorporationId",
         "GetCorporationsCorporationId",
         "GetCharactersCharacterIdSearch",
-        "GetAlliancesAllianceId"
-    ]
+        "GetAlliancesAllianceId",
+    ],
 )
