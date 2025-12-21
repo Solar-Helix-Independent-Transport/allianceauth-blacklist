@@ -7,11 +7,7 @@
         {% if comment.restricted %}<span class="label label-warning fas fa-shield-alt" title="Restricted"></span>{% endif %}
     </p>
     <p class="text-center"
-       style="white-space: pre-wrap;
-              white-space: -moz-pre-wrap;
-              white-space: -pre-wrap;
-              white-space: -o-pre-wrap;
-              word-wrap: break-word">{{ comment.comment }}</p>
+       style="white-space: pre-wrap; word-wrap: break-word">{{ comment.comment }}</p>
     {% if forloop.last %}{% endif %}
 {% empty %}
     <p class="alert alert-info text-center">{% translate "No Comments!" %}</p>
