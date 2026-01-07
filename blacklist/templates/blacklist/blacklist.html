@@ -67,7 +67,7 @@
         $(document).ready(function() {
             $('#blacklist-table').DataTable({
                 serverSide: true,
-                ajax: '/blacklist/api/datatables_server_blacklist/',
+                ajax: '/blacklist/tables/blacklist_table',
                 columnDefs: [
                     { "searchable": false, "targets": [0] },
                     { "sortable": false, "targets": [0,2] },

@@ -1,7 +1,6 @@
 from django.urls import path, re_path
 
 from . import views
-from .api import api
 
 app_name = 'blacklist'
 
@@ -23,5 +22,7 @@ urlpatterns = [
     re_path(r'^add_note/(?P<eve_id>(\d)*)/$', views.add_note, name='add_note'),
     re_path(r'^edit_note/(?P<note_id>(\d)*)/$',
             views.edit_note, name='edit_note'),
-    re_path(r'^api/', api.urls),
+    path(r"tables/blacklist_table",
+         views.BlacklistTable.as_view(), name='blacklist_table'),
+    path(r"tables/evenote_table", views.EveNoteTable.as_view(), name='evenote_table')
 ]

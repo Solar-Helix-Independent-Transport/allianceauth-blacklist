@@ -1,11 +1,15 @@
+import re
 from dataclasses import dataclass
 from typing import Any
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.http import HttpResponse
+from django.db.models import Model, Q
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from django.template import Context, Template
 from django.template.loader import render_to_string
+from django.views import View
 
 from allianceauth.authentication.decorators import permissions_required
 from allianceauth.authentication.models import CharacterOwnership
@@ -472,3 +476,142 @@ def edit_note(request, note_id=None):
         }
 
         return render(request, 'blacklist/edit_note.html', context)
+
+
+class DataTablesView(View):
+
+    model: Model = None
+    templates: list[str] = []
+    columns: list[tuple] = []
+
+    def get_model_qs(self):
+        return self.model.objects
+
+    def get(self, request: HttpRequest, *args, **kwargs):
+
+        # Get all our Params out of GET
+        length = int(request.GET.get("length"))
+        start = int(request.GET.get("start"))
+        limit = start + length
+        search_string = request.GET.get("search[value]")
+        try:
+            order_col = int(request.GET.get("order[0][column]"))
+        except Exception:
+            order_col = 0
+        order_dir = request.GET.get("order[0][dir]")
+        draw = int(request.GET.get("draw"))
+
+        # Global Search
+        filter_q = Q()
+        if len(search_string) > 0:
+            val = search_string
+            for x in self.columns:
+                if x[0]:
+                    # Apply search to all Columns
+                    filter_q |= Q(**{f'{x[1]}__icontains': val})
+
+        # Row Search
+        col_id_regex = r"columns\[(?P<id>[0-9]{1,})\]\[search\]\[value\]"
+        regex = re.compile(col_id_regex)
+        for c in request.GET:
+            _r = regex.findall(c)
+            if _r:
+                _c = self.columns[int(_r[0])]
+                if _c[0]:
+                    if len(request.GET[c]):
+                        filter_q |= Q(**{f'{_c[1]}__iregex': request.GET[c]})
+
+        order = ""
+        _o = self.columns[order_col]
+        if _o[0]:
+            if order_dir == 'desc':
+                order = '-' + _o[1]
+            else:
+                order = _o[1]
+
+        # Build response rows
+        items = []
+        qs = self.get_model_qs().filter(filter_q).order_by()
+        if order != "":
+            qs = qs.order_by(order)
+
+        for row in qs[start:limit]:
+            ctx = {"note": row}
+            row = []
+            for t in self.templates:
+                if "{{" in t:
+                    _template = Template(t)
+                    row.append(_template.render(Context(ctx)))
+                else:
+                    row.append(
+                        render_to_string(
+                            t,
+                            ctx,
+                            request
+                        )
+                    )
+            items.append(row)
+
+        # Build our output dict
+        datatables_data = {}
+        datatables_data['draw'] = draw
+        datatables_data['recordsTotal'] = self.get_model_qs().all().count()
+        datatables_data['recordsFiltered'] = self.get_model_qs().filter(
+            filter_q
+        ).count()
+        datatables_data['data'] = items
+
+        return JsonResponse(datatables_data)
+
+
+class BlacklistTable(DataTablesView):
+    model = EveNote
+    templates = [
+        "blacklist/stubs/img.html",
+        "blacklist/stubs/name.html",
+        """
+        {% load i18n %}
+        {% if note.restricted %}
+            {% translate "Restricted Content! Contact" %} {{ note.added_by }}
+        {% else %}
+            {{ note.reason }}
+        {% endif %}""",
+        "{{ note.eve_catagory }}"
+    ]
+
+    columns = [
+        (False, ""),
+        (True, "eve_name"),
+        (False, "added_at"),
+        (True, "eve_catagory"),
+    ]
+
+    def get_model_qs(self):
+        return super().get_model_qs().filter(blacklisted=True)
+
+
+class EveNoteTable(DataTablesView):
+    model = EveNote
+    templates = [
+        "blacklist/stubs/img.html",
+        "blacklist/stubs/name.html",
+        "blacklist/stubs/date.html",
+        "{{ note.added_by }}",
+        "blacklist/stubs/reason.html",
+        "{{ note.eve_catagory }}",
+        "{{ note.corporation_name }}",
+        "{{ note.alliance_name }}",
+        "blacklist/stubs/actions.html"
+    ]
+
+    columns = [
+        (False, ""),
+        (True, "eve_name"),
+        (True, "added_at"),
+        (True, "added_by"),
+        (True, "reason"),
+        (True, "eve_catagory"),
+        (True, "corporation_name"),
+        (True, "alliance_name"),
+        (False, "")
+    ]

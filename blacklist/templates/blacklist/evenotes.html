@@ -42,74 +42,22 @@
                     <th class="text-end">{% translate "Actions" %}</th>
                 </tr>
             </thead>
+            <!-- Put the footer in the header so it doesn't trigger the sorting on searching -->
+            <!-- only footers with text will get given an input -->
+            <tfoot style="display: table-header-group;">
+                <tr>
+                    <th></th>
+                    <th>{% translate "Name" %}</th>
+                    <th></th>
+                    <th>{% translate "Added By" %}</th>
+                    <th>{% translate "Reason" %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tfoot>
             <tbody>
-                {% comment %} {% for note in notes %}
-                    <tr>
-                        <td class="text-center" style="vertical-align:middle;">
-                            {% eve_logo note.eve_id note.eve_name note.eve_catagory 64 %}
-                        </td>
-                        <td class="text-center" style="vertical-align:middle;">
-                            <p>
-                                {{ note.eve_name }}
-                                {% if note.eve_catagory == 'character' %}
-                                    <br />
-                                    <span class="badge badge-default">{{ note.corporation_name }}</span>
-                                    <br />
-                                    <span class="badge badge-default">{{ note.alliance_name }}</span>
-                                {% endif %}
-                            </p>
-                            {% if note.blacklisted %}
-                                <span class="badge badge-danger">{% translate "BLACKLISTED" %}</span>
-                            {% endif %}
-                            {% if note.restricted %}
-                                <span class="badge badge-warning">{% translate "RESTRICTED" %}</span>
-                            {% endif %}
-                            {% if note.ultra_restricted %}
-                                <span class="badge badge-warning">{% translate "ULTRA RESTRICTED" %}</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-center" style="vertical-align:middle;">
-                            <p>{{ note.added_at|date:"Y-m-d H:i" }}</p>
-                            <p>{{ note.added_at|naturaltime }}</p>
-                        </td>
-                        <td class="text-center" style="vertical-align:middle;">
-                            <p>{{ note.added_by }}</p>
-                        </td>
-                        <td style="vertical-align:middle;">
-                            <p style="white-space: pre-wrap;
-                                        white-space: -moz-pre-wrap;
-                                        white-space: -pre-wrap;
-                                        white-space: -o-pre-wrap;
-                                        word-wrap: break-word">{{ note.reason }}</p>
-                        </td>
-
-                        <!-- for filtering -->
-                        <td class="text-center" style="vertical-align:middle;">{{ note.added_by }}</td>
-                        <td class="text-center" style="vertical-align:middle;">{{ note.eve_catagory }}</td>
-                        <td class="text-center" style="vertical-align:middle;">{{ note.corporation_name }}</td>
-                        <td class="text-center" style="vertical-align:middle;">{{ note.alliance_name }}</td>
-                        <td class="text-center" style="vertical-align:middle;">
-                            <div class="text-center">
-                                {% if view_comment or add_comment %}
-                                    <a type="button"
-                                        class="btn btn-primary fa fa-comments modal-comments-button"
-                                        id="{{ note.id }}"
-                                        title="Comments for: {{ note.eve_name }}"></a>
-                                {% endif %}
-                                {% if edit_note %}
-                                    <a class="btn btn-info fa fa-edit modal-edit-button" id="{{ note.id }}" type="button" title="Edit: {{ note.eve_name }}">
-                                    </a>
-                                {% endif %}
-                                {% if add_comment %}
-                                    <a class="btn btn-primary fa fa-comment modal-add-comment-button"
-                                        type="button"
-                                        id="{{ note.id }}"
-                                        title="Add Comment for: {{ note.eve_name }}"></a>
-                                {% endif %}
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %} {% endcomment %}
             </tbody>
         </table>
     </div>
@@ -132,7 +80,6 @@
 
 {% block extra_javascript %}
     {% include 'bundles/datatables-js-bs5.html' %}
-    {% comment %} {% include 'bundles/filterdropdown-js.html' %} {% endcomment %}
     <script>
         const token = document.getElementsByName('csrfmiddlewaretoken')[1].value;
 
@@ -298,7 +245,28 @@
         $(document).ready(function () {
             $("#notes-table").DataTable({
                 serverSide: true,
-                ajax: '/blacklist/api/datatables_server_notes/',
+                ajax: '/blacklist/tables/evenote_table',
+                initComplete: function () {
+                    this.api()
+                    .columns()
+                    .every(function () {
+                        let column = this;
+                        let title = column.footer().textContent;
+                        if (title != ""){
+                            // Create input element
+                            let input = document.createElement('input');
+                            input.placeholder = title;
+                            column.footer().replaceChildren(input);
+
+                            // Event listener for user input
+                            input.addEventListener('keyup', () => {
+                                if (column.search() !== this.value) {
+                                    column.search(input.value).draw();
+                                }
+                            });
+                        }
+                    });
+                },
                 {% comment %} filterDropDown: {
                     columns: [
                         {
@@ -316,7 +284,7 @@
                     ],
                     bootstrap: true,
                     bootstrap_version: 5
-                }, {% endcomment %}
+}, {% endcomment %}
                 columnDefs: [
                     { searchable: false, targets: [0] },
                     { sortable: false, targets: [0, 4, 8] },
@@ -361,7 +329,6 @@
                             false
                         );
                     }
-
                 }
             });
         });
