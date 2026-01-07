@@ -39,7 +39,7 @@
                     <th>{% translate "Category" %}</th>
                     <th>{% translate "Corporation" %}</th>
                     <th>{% translate "Alliance" %}</th>
-                    <th>{% translate "Actions" %}</th>
+                    <th class="text-end">{% translate "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -139,8 +139,7 @@
         // Elems
         const searchModal = new bootstrap.Modal(document.getElementById('modal-main'))
         const addNewButton = document.getElementById('add-new')
-        const editButton = document.getElementsByClassName('modal-edit-button')
-        const commentButton = document.getElementsByClassName('modal-comments-button')
+
         const loaderSpinner = `
             <div class="text-center">
                 <div class="spinner-border" style="width: 6rem; height: 6rem;" role="status">
@@ -320,7 +319,7 @@
                 }, {% endcomment %}
                 columnDefs: [
                     { searchable: false, targets: [0] },
-                    { sortable: false, targets: [0, 4] },
+                    { sortable: false, targets: [0, 4, 8] },
                     { visible: false, targets: [5, 6, 7] },
                 ],
                 order: [
@@ -328,6 +327,42 @@
                 ],
                 pageLength: 10,
                 responsive: true,
+                drawCallback: function(settings){
+                    const editButtons = document.getElementsByClassName('modal-edit-button')
+                    const commentButtons = document.getElementsByClassName('modal-comments-button')
+                    const addCommentButtons = document.getElementsByClassName('modal-add-comment-button')
+
+                    for (var i = 0; i < commentButtons.length; i++) {
+                        commentButtons[i].addEventListener(
+                            'click',
+                            function() {
+                                console.log("COMMENT", this.id)
+                            },
+                            false
+                        );
+                    }
+
+                    for (var i = 0; i < editButtons.length; i++) {
+                        editButtons[i].addEventListener(
+                            'click',
+                            function() {
+                                console.log("EDIT", this.id)
+                            },
+                            false
+                        );
+                    }
+
+                    for (var i = 0; i < addCommentButtons.length; i++) {
+                        addCommentButtons[i].addEventListener(
+                            'click',
+                            function() {
+                                console.log("ADD COMMENT", this.id)
+                            },
+                            false
+                        );
+                    }
+
+                }
             });
         });
     </script>

@@ -1,19 +1,25 @@
 
-<div class="text-center">
-    {% if view_comment or add_comment %}
+<div class="text-end">
+    {% if perms.blacklist.view_eve_note_comments or perms.blacklist.add_new_eve_note_comments %}
         <a type="button"
             class="btn btn-primary fa fa-comments modal-comments-button"
             id="{{ note.id }}"
-            title="Comments for: {{ note.eve_name }}"></a>
-    {% endif %}
-    {% if edit_note %}
-        <a class="btn btn-info fa fa-edit modal-edit-button" id="{{ note.id }}" type="button" title="Edit: {{ note.eve_name }}">
+            title="Comments for: {{ note.eve_name }}">
         </a>
     {% endif %}
-    {% if add_comment %}
+    {% if perms.blacklist.add_new_eve_notes %}
+        <a
+            class="btn btn-info fa fa-edit modal-edit-button"
+            id="{{ note.id }}"
+            type="button"
+            title="Edit: {{ note.eve_name }}">
+        </a>
+    {% endif %}
+    {% if perms.blacklist.add_new_eve_note_comments %}
         <a class="btn btn-primary fa fa-comment modal-add-comment-button"
             type="button"
             id="{{ note.id }}"
-            title="Add Comment for: {{ note.eve_name }}"></a>
+            title="Add Comment for: {{ note.eve_name }}">
+        </a>
     {% endif %}
 </div>
