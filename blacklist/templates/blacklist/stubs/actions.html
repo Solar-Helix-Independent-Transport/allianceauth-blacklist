@@ -11,6 +11,7 @@
         <a
             class="btn btn-info fa fa-edit modal-edit-button"
             id="{{ note.id }}"
+            href="{% url "blacklist:edit_note" note.id %}"
             type="button"
             title="Edit: {{ note.eve_name }}">
         </a>

@@ -1,57 +1,71 @@
 {% extends "allianceauth/base-bs5.html" %}
 {% load i18n %}
+{% load django_bootstrap5 %}
 {% load blacklist_tags %}
 {% block page_title %}
     {% translate "Character Update" %}
 {% endblock page_title %}
 
 {% block content %}
-    <h1 class="text-center col-md-12">{% translate "Editing Pilot Log" %}</h1>
-    <p class="text-center col-md-12">{% translate "Please ensure character below is correct!" %}</p>
+    <h1 class="text-center w-100">{% translate "Editing Pilot Log" %}</h1>
+    <p class="text-center w-100">{% translate "Please ensure character below is correct!" %}</p>
     {% if note.eve_catagory == 'character' %}
-        <div class="text-center col-md-offset-3 col-md-6 clearfix">
-            <div class="text-center col-md-6">
+        <div class="text-center w-100">
+            <div class="text-center">
                 {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
                 <h4>{{ note.eve_name }}</h4>
             </div>
-            <div class="text-center col-md-6">
-                <div class="text-center col-md-12">
+            <div class="text-center">
+                <div class="text-center">
                     {% eve_logo note.corporation_id note.corporation_name "corporation" 64 %}
                     <h5>{{ note.corporation_name }}</h5>
                 </div>
-                <div class="text-center col-md-12">
+                <div class="text-center">
                     {% eve_logo note.alliance_id note.alliance_name "alliance" 64 %}
                     <h5>{{ note.alliance_name }}</h5>
                 </div>
             </div>
         </div>
     {% else %}
-        <div class="text-center col-md-offset-3 col-md-6 clearfix">
-            <div class="text-center col-md-12">
+        <div class="text-center">
+            <div class="text-center">
                 {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
                 <h4>{{ note.eve_name }}</h4>
             </div>
         </div>
     {% endif %}
-    <div class="col-sm-offset-3 col-sm-6">
-        <form action="/blacklist/edit_note/{{ note.id }}/" method="post">
+    <div>
+        <form action="{% url "blacklist:edit_note" note.id %}" method="post">
             {% csrf_token %}
-            <input type="hidden" name="note_id" value="{{ note.id }}" />
-            {% if add_restricted_note %}
-                <h4 class="text-center">
-                    <span class="label label-warning">{{ form.restricted.label_tag }}
-                    {{ form.restricted }}</span>
-                </h4>
+            <input type="hidden" name="eve_name" value="{{ name.name }}" />
+            <input type="hidden" name="eve_cat" value="{{ name.category }}" />
+            {% if name.category == 'character' %}
+                <input type="hidden" name="corporation_id" value="{{ char_info.corporation_id }}" />
+                <input type="hidden" name="corporation_name" value="{{ corp_info.name }}" />
+                {% if alliance_info %}
+                    <input type="hidden" name="alliance_id" value="{{ corp_info.alliance_id }}" />
+                    <input type="hidden" name="alliance_name" value="{{ alliance_info.name }}" />
+                {% endif %}
             {% endif %}
-            <p>
-                {{ form.reason.label_tag }}
-                {{ form.reason }}
-            </p>
-            {% if add_blacklist %}
-                <h4 class="text-center">
-                    <span class="label label-danger">{{ form.blacklisted.label_tag }}
-                    {{ form.blacklisted }}</span>
-                </h4>
+            {{ form.reason.errors }}
+            {% bootstrap_field form.reason %}
+            {% if perms.blacklist.add_restricted_eve_notes %}
+                {{ form.restricted.errors }}
+                <span class="text-warning">
+                    {% bootstrap_field form.restricted %}
+                </span>
+            {% endif %}
+            {% if perms.blacklist.add_ultra_restricted_eve_notes %}
+                {{ form.ultra_restricted.errors }}
+                <span class="text-warning">
+                    {% bootstrap_field form.ultra_restricted %}
+                </span>
+            {% endif %}
+            {% if perms.blacklist.add_to_blacklist %}
+                {{ form.blacklisted.errors }}
+                <span class="text-danger">
+                    {% bootstrap_field form.blacklisted %}
+                </span>
             {% endif %}
             <input type="submit" value="Submit" class="btn btn-primary" />
         </form>

@@ -451,11 +451,19 @@ def edit_note(request, note_id=None):
         # check whether it's valid:
         if form.is_valid():
             restricted = form.cleaned_data['restricted']
+            ultra_restricted = form.cleaned_data['ultra_restricted']
             blacklisted = form.cleaned_data['blacklisted']
-            jb = EveNote.objects.get(id=request.POST.get('note_id'))
+
+            jb = EveNote.objects.get(id=note_id)
             jb.reason = form.cleaned_data['reason']
-            jb.blacklisted = blacklisted
-            jb.restricted = restricted
+
+            # Maintain if they don't have perms
+            if request.user.has_perm('blacklist.add_to_blacklist'):
+                jb.blacklisted = blacklisted
+            if request.user.has_perm('blacklist.add_restricted_eve_notes'):
+                jb.restricted = restricted
+            if request.user.has_perm('blacklist.add_ultra_restricted_eve_notes'):
+                jb.ultra_restricted = ultra_restricted
             jb.save()
             messages.info(request, "Edit Successful")
             return redirect('blacklist:note_board')
@@ -484,11 +492,11 @@ class DataTablesView(View):
     templates: list[str] = []
     columns: list[tuple] = []
 
-    def get_model_qs(self):
+    def get_model_qs(self, request: HttpRequest):
         return self.model.objects
 
     def get_param(self, request: HttpRequest, key: str, cast=str, default=""):
-        return cast(request.GET.get("length", default))
+        return cast(request.GET.get(key, default))
 
     def filter_qs(self, search_string: str):
         # Global Search
@@ -503,6 +511,7 @@ class DataTablesView(View):
 
     def filter_col_qs(self, get: dict):
         # Row Search
+        # TODO check if we have a regex search or not
         col_id_regex = r"columns\[(?P<id>[0-9]{1,})\]\[search\]\[value\]"
         regex = re.compile(col_id_regex)
         filter_q = Q()
@@ -553,7 +562,7 @@ class DataTablesView(View):
 
         # Build response rows
         items = []
-        qs = self.get_model_qs().filter(filter_q).order_by()
+        qs = self.get_model_qs(request).filter(filter_q).order_by()
 
         # Apply ordering
         order = self.order_str(order_col, order_dir)
@@ -571,7 +580,8 @@ class DataTablesView(View):
         # Build our output dict
         datatables_data = {}
         datatables_data['draw'] = draw
-        datatables_data['recordsTotal'] = self.get_model_qs().all().count()
+        datatables_data['recordsTotal'] = self.get_model_qs(
+            request).all().count()
         datatables_data['recordsFiltered'] = qs.count()
         datatables_data['data'] = items
 
@@ -600,8 +610,14 @@ class BlacklistTable(DataTablesView):
         (True, "eve_catagory"),
     ]
 
-    def get_model_qs(self):
-        return super().get_model_qs().filter(blacklisted=True)
+    def get_model_qs(self, request: HttpRequest):
+        qs = super().get_model_qs().filter(blacklisted=True)
+        # prevent access to hidden stuffs
+        if not request.user.has_perm("blacklist.view_restricted_eve_notes"):
+            qs = qs.filter(restricted=False)
+        if not request.user.has_perm("blacklist.view_ultra_restricted_eve_notes"):
+            qs = qs.filter(ultra_restricted=False)
+        return qs
 
 
 class EveNoteTable(DataTablesView):

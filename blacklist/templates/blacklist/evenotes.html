@@ -279,7 +279,6 @@
                 pageLength: 10,
                 responsive: true,
                 drawCallback: function(settings){
-                    const editButtons = document.getElementsByClassName('modal-edit-button')
                     const commentButtons = document.getElementsByClassName('modal-comments-button')
                     const addCommentButtons = document.getElementsByClassName('modal-add-comment-button')
 
@@ -288,16 +287,6 @@
                             'click',
                             function() {
                                 console.log("COMMENT", this.id)
-                            },
-                            false
-                        );
-                    }
-
-                    for (var i = 0; i < editButtons.length; i++) {
-                        editButtons[i].addEventListener(
-                            'click',
-                            function() {
-                                console.log("EDIT", this.id)
                             },
                             false
                         );
