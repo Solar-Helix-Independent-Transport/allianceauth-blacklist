@@ -255,6 +255,7 @@
                         if (title != ""){
                             // Create input element
                             let input = document.createElement('input');
+                            input.classList.add("w-100")
                             input.placeholder = title;
                             column.footer().replaceChildren(input);
 
@@ -267,24 +268,6 @@
                         }
                     });
                 },
-                {% comment %} filterDropDown: {
-                    columns: [
-                        {
-                            idx: 3,
-                        },
-                        {
-                            idx: 5,
-                        },
-                        {
-                            idx: 6,
-                        },
-                        {
-                            idx: 7,
-                        },
-                    ],
-                    bootstrap: true,
-                    bootstrap_version: 5
-}, {% endcomment %}
                 columnDefs: [
                     { searchable: false, targets: [0] },
                     { sortable: false, targets: [0, 4, 8] },

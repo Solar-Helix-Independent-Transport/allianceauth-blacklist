@@ -19,6 +19,16 @@
                         <th>{% translate "Category" %}</th>
                     </tr>
                 </thead>
+            <!-- Put the footer in the header so it doesn't trigger the sorting on searching -->
+            <!-- only footers with text will get given an input -->
+                <tfoot style="display: table-header-group;">
+                    <tr>
+                        <th></th>
+                        <th>{% translate "Name" %}</th>
+                        <th>{% translate "Reason" %}</th>
+                        <th>{% translate "Category" %}</th>
+                    </tr>
+                </tfoot>
                 <tbody>
                     {% comment %} {% for note in blacklist %}
                         <tr>
@@ -68,6 +78,28 @@
             $('#blacklist-table').DataTable({
                 serverSide: true,
                 ajax: '/blacklist/tables/blacklist_table',
+                initComplete: function () {
+                    this.api()
+                    .columns()
+                    .every(function () {
+                        let column = this;
+                        let title = column.footer().textContent;
+                        if (title != ""){
+                            // Create input element
+                            let input = document.createElement('input');
+                            input.classList.add("w-100")
+                            input.placeholder = title;
+                            column.footer().replaceChildren(input);
+
+                            // Event listener for user input
+                            input.addEventListener('keyup', () => {
+                                if (column.search() !== this.value) {
+                                    column.search(input.value).draw();
+                                }
+                            });
+                        }
+                    });
+                },
                 columnDefs: [
                     { "searchable": false, "targets": [0] },
                     { "sortable": false, "targets": [0,2] },
