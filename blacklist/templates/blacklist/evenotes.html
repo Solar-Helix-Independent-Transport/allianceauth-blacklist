@@ -132,7 +132,7 @@
 
 {% block extra_javascript %}
     {% include 'bundles/datatables-js-bs5.html' %}
-    {% include 'bundles/filterdropdown-js.html' %}
+    {% comment %} {% include 'bundles/filterdropdown-js.html' %} {% endcomment %}
     <script>
         const token = document.getElementsByName('csrfmiddlewaretoken')[1].value;
 
@@ -300,7 +300,7 @@
             $("#notes-table").DataTable({
                 serverSide: true,
                 ajax: '/blacklist/api/datatables_server_notes/',
-                filterDropDown: {
+                {% comment %} filterDropDown: {
                     columns: [
                         {
                             idx: 3,
@@ -317,14 +317,16 @@
                     ],
                     bootstrap: true,
                     bootstrap_version: 5
-                },
+                }, {% endcomment %}
                 columnDefs: [
                     { searchable: false, targets: [0] },
                     { sortable: false, targets: [0, 4] },
                     { visible: false, targets: [5, 6, 7] },
                 ],
-                order: [[1, "asc"]],
-                pageLength: 25,
+                order: [
+                    [1, "asc"]
+                ],
+                pageLength: 10,
                 responsive: true,
             });
         });

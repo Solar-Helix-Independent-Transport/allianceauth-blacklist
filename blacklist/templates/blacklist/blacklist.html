@@ -13,14 +13,14 @@
             <table class="table table-striped" id="blacklist-table" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th class="text-center"></th>
-                        <th class="text-center">{% translate "Name" %}</th>
+                        <th></th>
+                        <th>{% translate "Name" %}</th>
                         <th>{% translate "Reason" %}</th>
                         <th>{% translate "Category" %}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for note in blacklist %}
+                    {% comment %} {% for note in blacklist %}
                         <tr>
                             <td class="text-center" style="vertical-align:middle;">
                                 {% eve_logo note.eve_id note.eve_name note.eve_catagory 64 %}
@@ -49,7 +49,7 @@
                             <!-- for filtering -->
                             <td class="text-center" style="vertical-align:middle;">{{ note.eve_catagory }}</td>
                         </tr>
-                    {% endfor %}
+                    {% endfor %} {% endcomment %}
                 </tbody>
             </table>
         {% else %}
@@ -61,30 +61,27 @@
 {% endblock tb_block %}
 
 {% block extra_javascript %}
-    {% include "bundles/datatables-js.html" %}
+    {% include 'bundles/datatables-js-bs5.html' %}
 
     <script>
         $(document).ready(function() {
             $('#blacklist-table').DataTable({
-                "filterDropDown": {
-                    columns: [{
-                        idx: 3
-                    }],
-                    bootstrap: true,
-                    bootstrap_version: 5
-                },
-                "columnDefs": [
+                serverSide: true,
+                ajax: '/blacklist/api/datatables_server_blacklist/',
+                columnDefs: [
                     { "searchable": false, "targets": [0] },
                     { "sortable": false, "targets": [0,2] },
                     { "visible": false, "targets": [3] }
-
                 ],
-                "order": [
+                order: [
                     [1, "asc"]
                 ],
-                "pageLength": 25,
-                "responsive" : true
+                pageLength: 10,
+                responsive : true
             });
         });
     </script>
 {% endblock extra_javascript %}
+{% block extra_css %}
+    {% include 'bundles/datatables-css-bs5.html' %}
+{% endblock %}
