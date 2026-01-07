@@ -487,20 +487,10 @@ class DataTablesView(View):
     def get_model_qs(self):
         return self.model.objects
 
-    def get(self, request: HttpRequest, *args, **kwargs):
+    def get_param(self, request: HttpRequest, key: str, cast=str, default=""):
+        return cast(request.GET.get("length", default))
 
-        # Get all our Params out of GET
-        length = int(request.GET.get("length"))
-        start = int(request.GET.get("start"))
-        limit = start + length
-        search_string = request.GET.get("search[value]")
-        try:
-            order_col = int(request.GET.get("order[0][column]"))
-        except Exception:
-            order_col = 0
-        order_dir = request.GET.get("order[0][dir]")
-        draw = int(request.GET.get("draw"))
-
+    def filter_qs(self, search_string: str):
         # Global Search
         filter_q = Q()
         if len(search_string) > 0:
@@ -509,18 +499,23 @@ class DataTablesView(View):
                 if x[0]:
                     # Apply search to all Columns
                     filter_q |= Q(**{f'{x[1]}__icontains': val})
+        return filter_q
 
+    def filter_col_qs(self, get: dict):
         # Row Search
         col_id_regex = r"columns\[(?P<id>[0-9]{1,})\]\[search\]\[value\]"
         regex = re.compile(col_id_regex)
-        for c in request.GET:
+        filter_q = Q()
+        for c in get:
             _r = regex.findall(c)
             if _r:
                 _c = self.columns[int(_r[0])]
                 if _c[0]:
-                    if len(request.GET[c]):
-                        filter_q |= Q(**{f'{_c[1]}__iregex': request.GET[c]})
+                    if len(get[c]):
+                        filter_q |= Q(**{f'{_c[1]}__iregex': get[c]})
+        return filter_q
 
+    def order_str(self, order_col, order_dir):
         order = ""
         _o = self.columns[order_col]
         if _o[0]:
@@ -528,6 +523,35 @@ class DataTablesView(View):
                 order = '-' + _o[1]
             else:
                 order = _o[1]
+        return order
+
+    def render_template(self, request: HttpRequest, template: str, ctx: dict):
+        if "{{" in template:
+            _template = Template(template)
+            return _template.render(Context(ctx))
+        else:
+            return render_to_string(
+                template,
+                ctx,
+                request
+            )
+
+    def get(self, request: HttpRequest, *args, **kwargs):
+
+        # Get all our Params out of GET
+        length = self.get_param(request, "length", int)
+        start = self.get_param(request, "start", int)
+        search_string = self.get_param(request, "search[value]")
+        order_col = self.get_param(request, "order[0][column]", int, 0)
+        order_dir = self.get_param(request, "order[0][dir]")
+        draw = self.get_param(request, "draw", int)
+
+        limit = start + length
+
+        # Searches
+        filter_q = Q() | self.filter_qs(search_string) | self.filter_col_qs(request.GET)
+
+        order = self.order_str()
 
         # Build response rows
         items = []
@@ -539,26 +563,14 @@ class DataTablesView(View):
             ctx = {"note": row}
             row = []
             for t in self.templates:
-                if "{{" in t:
-                    _template = Template(t)
-                    row.append(_template.render(Context(ctx)))
-                else:
-                    row.append(
-                        render_to_string(
-                            t,
-                            ctx,
-                            request
-                        )
-                    )
+                row.append(self.render_template(request, t, ctx))
             items.append(row)
 
         # Build our output dict
         datatables_data = {}
         datatables_data['draw'] = draw
         datatables_data['recordsTotal'] = self.get_model_qs().all().count()
-        datatables_data['recordsFiltered'] = self.get_model_qs().filter(
-            filter_q
-        ).count()
+        datatables_data['recordsFiltered'] = qs.count()
         datatables_data['data'] = items
 
         return JsonResponse(datatables_data)
