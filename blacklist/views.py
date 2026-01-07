@@ -551,14 +551,16 @@ class DataTablesView(View):
         # Searches
         filter_q = Q() | self.filter_qs(search_string) | self.filter_col_qs(request.GET)
 
-        order = self.order_str()
-
         # Build response rows
         items = []
         qs = self.get_model_qs().filter(filter_q).order_by()
+
+        # Apply ordering
+        order = self.order_str(order_col, order_dir)
         if order != "":
             qs = qs.order_by(order)
 
+        # build output
         for row in qs[start:limit]:
             ctx = {"note": row}
             row = []
