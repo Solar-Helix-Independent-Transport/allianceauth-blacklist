@@ -3,24 +3,24 @@
     {% if perms.blacklist.view_eve_note_comments or perms.blacklist.add_new_eve_note_comments %}
         <a type="button"
             class="btn btn-primary fa fa-comments modal-comments-button"
-            id="{{ note.id }}"
-            title="Comments for: {{ note.eve_name }}">
+            id="{{ row.id }}"
+            title="Comments for: {{ row.eve_name }}">
         </a>
     {% endif %}
     {% if perms.blacklist.add_new_eve_notes %}
         <a
             class="btn btn-info fa fa-edit modal-edit-button"
-            id="{{ note.id }}"
-            href="{% url "blacklist:edit_note" note.id %}"
+            id="{{ row.id }}"
+            href="{% url "blacklist:edit_note" row.id %}"
             type="button"
-            title="Edit: {{ note.eve_name }}">
+            title="Edit: {{ row.eve_name }}">
         </a>
     {% endif %}
     {% if perms.blacklist.add_new_eve_note_comments %}
         <a class="btn btn-primary fa fa-comment modal-add-comment-button"
             type="button"
-            id="{{ note.id }}"
-            title="Add Comment for: {{ note.eve_name }}">
+            id="{{ row.id }}"
+            title="Add Comment for: {{ row.eve_name }}">
         </a>
     {% endif %}
 </div>

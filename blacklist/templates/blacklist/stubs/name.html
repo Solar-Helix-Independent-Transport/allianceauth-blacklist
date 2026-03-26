@@ -1,16 +1,16 @@
 {% load i18n %}
 <p>
-    {{ note.eve_name }}
-    {% if note.eve_catagory == 'character' %}
+    {{ row.eve_name }}
+    {% if row.eve_catagory == 'character' %}
         <br />
-        <span class="badge text-bg-secondary">{{ note.corporation_name }}</span>
+        <span class="badge text-bg-secondary">{{ row.corporation_name }}</span>
         <br />
-        <span class="badge text-bg-secondary">{{ note.alliance_name }}</span>
+        <span class="badge text-bg-secondary">{{ row.alliance_name }}</span>
     {% endif %}
 </p>
-{% if note.blacklisted %}
+{% if row.blacklisted %}
     <span class="badge text-bg-danger">{% translate "BLACKLISTED" %}</span>
 {% endif %}
-{% if note.restricted %}
+{% if row.restricted %}
     <span class="badge text-bg-danger">{% translate "RESTRICTED" %}</span>
 {% endif %}

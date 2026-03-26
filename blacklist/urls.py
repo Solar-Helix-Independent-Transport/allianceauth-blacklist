@@ -24,5 +24,6 @@ urlpatterns = [
             views.edit_note, name='edit_note'),
     path(r"tables/blacklist_table",
          views.BlacklistTable.as_view(), name='blacklist_table'),
-    path(r"tables/evenote_table", views.EveNoteTable.as_view(), name='evenote_table')
+    path(r"tables/evenote_table/",
+         views.EveNoteTable.as_view(), name='evenote_table')
 ]

@@ -42,23 +42,6 @@
                     <th class="text-end">{% translate "Actions" %}</th>
                 </tr>
             </thead>
-            <!-- Put the footer in the header so it doesn't trigger the sorting on searching -->
-            <!-- only footers with text will get given an input -->
-            <tfoot style="display: table-header-group;">
-                <tr>
-                    <th></th>
-                    <th>{% translate "Name" %}</th>
-                    <th></th>
-                    <th>{% translate "Added By" %}</th>
-                    <th>{% translate "Reason" %}</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </tfoot>
-            <tbody>
-            </tbody>
         </table>
     </div>
 
@@ -79,7 +62,9 @@
 {% endblock %}
 
 {% block extra_javascript %}
-    {% include 'bundles/datatables-js-bs5.html' %}
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/columncontrol/1.2.0/js/dataTables.columnControl.min.js"></script>
     <script>
         const token = document.getElementsByName('csrfmiddlewaretoken')[1].value;
 
@@ -193,18 +178,27 @@
             }
             console.log("find table");
             $("#searched-names").DataTable({
-                filterDropDown: {
-                    columns: [
-                        {
-                            idx: 2,
-                        },
-                    ],
-                    bootstrap: true,
-                    bootstrap_version: 5
-                },
                 columnDefs: [
-                    { searchable: false, targets: [0, 3] },
-                    { sortable: false, targets: [0, 3] },
+                    {
+                        targets: [0,3],
+                        columnControl: [],
+                        sortable: false,
+                        searchable: false
+
+                    },
+                    {
+                        targets: [1,2,3],
+                        columnControl: [
+                            {
+                                target: 0,
+                                content: []
+                            },
+                            {
+                                target: 1,
+                                content: ['search']
+                            }
+                        ],
+                    },
                 ],
                 order: [[1, "asc"]],
                 pageLength: 10,
@@ -246,29 +240,27 @@
             $("#notes-table").DataTable({
                 serverSide: true,
                 ajax: '/blacklist/tables/evenote_table',
-                initComplete: function () {
-                    this.api()
-                    .columns()
-                    .every(function () {
-                        let column = this;
-                        let title = column.footer().textContent;
-                        if (title != ""){
-                            // Create input element
-                            let input = document.createElement('input');
-                            input.classList.add("w-100")
-                            input.placeholder = title;
-                            column.footer().replaceChildren(input);
-
-                            // Event listener for user input
-                            input.addEventListener('keyup', () => {
-                                if (column.search() !== this.value) {
-                                    column.search(input.value).draw();
-                                }
-                            });
-                        }
-                    });
-                },
                 columnDefs: [
+                    {
+                        targets: [0,2],
+                        columnControl: [],
+                        sortable: false,
+                        searchable: false
+
+                    },
+                    {
+                        targets: [1,3,4],
+                        columnControl: [
+                            {
+                                target: 0,
+                                content: []
+                            },
+                            {
+                                target: 1,
+                                content: ['search']
+                            }
+                        ],
+                    },
                     { searchable: false, targets: [0] },
                     { sortable: false, targets: [0, 4, 8] },
                     { visible: false, targets: [5, 6, 7] },
@@ -307,5 +299,6 @@
     </script>
 {% endblock %}
 {% block extra_css %}
-    {% include 'bundles/datatables-css-bs5.html' %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.bootstrap5.css" />
+    <link href="https://cdn.datatables.net/columncontrol/1.2.0/css/columnControl.bootstrap5.min.css" rel="stylesheet">
 {% endblock %}

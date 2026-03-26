@@ -17,50 +17,9 @@
                         <th>{% translate "Name" %}</th>
                         <th>{% translate "Reason" %}</th>
                         <th>{% translate "Category" %}</th>
+                        <th>{% translate "ID" %}</th>
                     </tr>
                 </thead>
-            <!-- Put the footer in the header so it doesn't trigger the sorting on searching -->
-            <!-- only footers with text will get given an input -->
-                <tfoot style="display: table-header-group;">
-                    <tr>
-                        <th></th>
-                        <th>{% translate "Name" %}</th>
-                        <th>{% translate "Reason" %}</th>
-                        <th>{% translate "Category" %}</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    {% comment %} {% for note in blacklist %}
-                        <tr>
-                            <td class="text-center" style="vertical-align:middle;">
-                                {% eve_logo note.eve_id note.eve_name note.eve_catagory 64 %}
-                            </td>
-                            <td class="text-center" style="vertical-align:middle;">
-                                <p>
-                                    {{ note.eve_name }}
-                                    {% if note.eve_catagory == 'character' %}
-                                        <br />
-                                        <span class="label label-default">{{ note.corporation_name }}</span>
-                                        <br />
-                                        <span class="label label-default">{{ note.alliance_name }}</span>
-                                    {% endif %}
-                                </p>
-                            </td>
-                            <td style="vertical-align:middle;">
-                                <p style="white-space: pre-wrap; word-wrap: break-word">
-                                    {% if note.restricted %}
-                                        {% translate "Restricted Content! Contact" %} {{ note.added_by }}
-                                    {% else %}
-                                        {{ note.reason }}
-                                    {% endif %}
-                                </p>
-                            </td>
-
-                            <!-- for filtering -->
-                            <td class="text-center" style="vertical-align:middle;">{{ note.eve_catagory }}</td>
-                        </tr>
-                    {% endfor %} {% endcomment %}
-                </tbody>
             </table>
         {% else %}
             <div class="alert alert-warning text-center">
@@ -71,39 +30,35 @@
 {% endblock tb_block %}
 
 {% block extra_javascript %}
-    {% include 'bundles/datatables-js-bs5.html' %}
-
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/columncontrol/1.2.0/js/dataTables.columnControl.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#blacklist-table').DataTable({
                 serverSide: true,
                 ajax: '/blacklist/tables/blacklist_table',
-                initComplete: function () {
-                    this.api()
-                    .columns()
-                    .every(function () {
-                        let column = this;
-                        let title = column.footer().textContent;
-                        if (title != ""){
-                            // Create input element
-                            let input = document.createElement('input');
-                            input.classList.add("w-100")
-                            input.placeholder = title;
-                            column.footer().replaceChildren(input);
-
-                            // Event listener for user input
-                            input.addEventListener('keyup', () => {
-                                if (column.search() !== this.value) {
-                                    column.search(input.value).draw();
-                                }
-                            });
-                        }
-                    });
-                },
                 columnDefs: [
-                    { "searchable": false, "targets": [0] },
-                    { "sortable": false, "targets": [0,2] },
-                    { "visible": false, "targets": [3] }
+                    {
+                        targets: 0,
+                        columnControl: [],
+                        sortable: false,
+                        searchable: false
+
+                    },
+                    {
+                        targets: [1,2,3,4],
+                        columnControl: [
+                            {
+                                target: 0,
+                                content: []
+                            },
+                            {
+                                target: 1,
+                                content: ['search']
+                            }
+                        ],
+                    },
                 ],
                 order: [
                     [1, "asc"]
@@ -115,5 +70,7 @@
     </script>
 {% endblock extra_javascript %}
 {% block extra_css %}
-    {% include 'bundles/datatables-css-bs5.html' %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.bootstrap5.css" />
+    <link href="https://cdn.datatables.net/columncontrol/1.2.0/css/columnControl.bootstrap5.min.css" rel="stylesheet">
+
 {% endblock %}
