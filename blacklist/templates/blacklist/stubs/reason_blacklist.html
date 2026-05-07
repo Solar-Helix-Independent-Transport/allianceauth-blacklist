@@ -3,6 +3,6 @@
     {% translate "Restricted Content! Contact" %} {{ row.added_by }}
 {% elif row.ultra_restricted %}
     {% translate "Restricted Content! Contact" %} {{ row.added_by }}
- {% else %}
-    {{ row.reason }}
+{% else %}
+    {{ row.reason|linebreaks|urlize }}
 {% endif %}
