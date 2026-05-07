@@ -6,6 +6,9 @@
 {% block header_nav_brand %}
     {% translate "Pilot Log" %}
 {% endblock %}
+{% block page_title %}
+    {% translate "Pilot Log" %}
+{% endblock page_title %}
 
 {% block header_nav_collapse_right %}
     <li>
@@ -27,8 +30,6 @@
                     </span>
                 </a>
             </li>
-
-
         {% endif %}
 
         {% if search_char %}
@@ -41,7 +42,7 @@
 
 {% block tb_block %}
     <div id="all-notes">
-        <table class="table table-striped" id="notes-table" style="width: 100%;">
+        <table class="table table-striped text-nowrap" id="notes-table" style="width: 100%;">
             <thead>
                 <tr>
                     <th></th>
@@ -78,6 +79,8 @@
     <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.3.6/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdn.datatables.net/columncontrol/1.2.0/js/dataTables.columnControl.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.8/js/dataTables.responsive.min.js" integrity="sha384-jp1JS4vMvRmld4ZK9Co4AZftrm1tt3FbEZrCdFZIcoRiazQGkTqOS1QqI060oG2F" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.8/js/responsive.bootstrap5.js" integrity="sha384-hyp/YDWGBMFqg7pJuS+y+2VWJkwnOyX+oMN9fWcxINo2flqjC/SdNaHj8LIV4zKJ" crossorigin="anonymous"></script>
     <script>
         const token = document.getElementsByName('csrfmiddlewaretoken')[1].value;
 
@@ -252,7 +255,7 @@
         $(document).ready(function () {
             $("#notes-table").DataTable({
                 serverSide: true,
-                ajax: '/blacklist/tables/evenote_table',
+                ajax: "{% url 'blacklist:evenote_table' %}",
                 columnDefs: [
                     {
                         targets: [0,2],
@@ -277,6 +280,8 @@
                     { searchable: false, targets: [0] },
                     { sortable: false, targets: [0, 4, 8] },
                     { visible: false, targets: [5, 6, 7] },
+                    { responsivePriority: 1, targets: [ 1, 4, 8, ] },
+                    { responsivePriority: 99999999, targets: [ 0, ] }
                 ],
                 order: [
                     [1, "asc"]
@@ -359,4 +364,6 @@
 {% block extra_css %}
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.bootstrap5.css" />
     <link href="https://cdn.datatables.net/columncontrol/1.2.0/css/columnControl.bootstrap5.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/responsive/3.0.8/css/responsive.bootstrap5.min.css" rel="stylesheet" integrity="sha384-seyUnB//1QOFEqox9uI7YTLBgz9jBwFRqZvsEPFrTw6NAsFEo70nhBWsQfODqiYA" crossorigin="anonymous">
+
 {% endblock %}
