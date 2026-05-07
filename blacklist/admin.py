@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import BlacklistFilter
-from .models import EveNote
 
+from .models import BlacklistFilter, EveNote
 
 admin.site.register(BlacklistFilter)
 

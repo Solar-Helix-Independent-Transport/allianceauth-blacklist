@@ -1,12 +1,16 @@
-from django.test import TestCase, RequestFactory
-from django.urls import reverse
-from allianceauth.tests.auth_utils import AuthUtils
-from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo
-from allianceauth.authentication.models import CharacterOwnership
-from django.contrib.auth.models import User
-from django.utils import timezone
 from securegroups import models as gb_models
-from django.contrib.auth.models import Group
+
+from django.contrib.auth.models import Group, User
+from django.test import RequestFactory, TestCase
+from django.urls import reverse
+from django.utils import timezone
+
+from allianceauth.authentication.models import CharacterOwnership
+from allianceauth.eveonline.models import (
+    EveAllianceInfo, EveCharacter, EveCorporationInfo,
+)
+from allianceauth.tests.auth_utils import AuthUtils
+
 from ..models import BlacklistFilter, EveNote
 
 
@@ -139,7 +143,8 @@ class TestBlacklistFilters(TestCase):
 
             users.append(user.pk)
 
-        tests = self.blacklist_filter.audit_filter(User.objects.filter(id__in=users))
+        tests = self.blacklist_filter.audit_filter(
+            User.objects.filter(id__in=users))
 
         self.assertFalse(tests[1]['check'])
         self.assertTrue(tests[2]['check'])

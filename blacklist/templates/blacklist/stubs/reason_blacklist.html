@@ -1,0 +1,8 @@
+{% load i18n %}
+{% if row.restricted %}
+    {% translate "Restricted Content! Contact" %} {{ row.added_by }}
+{% elif row.ultra_restricted %}
+    {% translate "Restricted Content! Contact" %} {{ row.added_by }}
+ {% else %}
+    {{ row.reason }}
+{% endif %}

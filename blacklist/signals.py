@@ -1,10 +1,12 @@
+import logging
+
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from . import models
-from . import tasks
+
+from . import models, tasks
+
 # signals go here
 
-import logging
 
 logger = logging.getLogger(__name__)
 

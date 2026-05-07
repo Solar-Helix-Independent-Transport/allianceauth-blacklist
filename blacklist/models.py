@@ -1,10 +1,12 @@
+from collections import defaultdict
 from pyexpat import model
+
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Q
+
 from allianceauth.authentication.models import CharacterOwnership
 from allianceauth.eveonline.models import EveCharacter
-from django.contrib.auth.models import User
-from django.db.models import Q
-from collections import defaultdict
 
 
 class BlackListSearchCharacter(models.Model):
@@ -19,6 +21,7 @@ class EveNote(models.Model):
 
     blacklisted = models.BooleanField(default=False)
     restricted = models.BooleanField(default=False)
+    ultra_restricted = models.BooleanField(default=False)
 
     added_by = models.CharField(max_length=500)
     added_at = models.DateTimeField(auto_now_add=True)
@@ -26,14 +29,15 @@ class EveNote(models.Model):
 
     # character additions
     corporation_id = models.IntegerField(null=True, default=None)
-    corporation_name = models.CharField(max_length=500, null=True, default=None)
+    corporation_name = models.CharField(
+        max_length=500, null=True, default=None)
 
     # corp/character additions
     alliance_id = models.IntegerField(null=True, default=None)
     alliance_name = models.CharField(max_length=500, null=True, default=None)
 
     def __str__(self):
-        return "{} added by: {}".format(self.eve_name, self.added_by)
+        return f"{self.eve_name} added by: {self.added_by}"
 
     class Meta:
         permissions = (
@@ -47,28 +51,40 @@ class EveNote(models.Model):
             ('add_to_blacklist', 'Can add to Blacklist'),
             # Higher Level Perms
             ('view_restricted_eve_notes', 'Can View restricted eve notes'),
+            ('view_ultra_restricted_eve_notes',
+             'Can View ultra_restricted eve notes'),
             ('add_restricted_eve_notes', 'Can Add restricted eve notes'),
+            ('add_ultra_restricted_eve_notes',
+             'Can Add ultra_restricted eve notes'),
         )
 
 
 class EveNoteComment(models.Model):
-    eve_note = models.ForeignKey(EveNote, on_delete=models.CASCADE, related_name='comment')
+    eve_note = models.ForeignKey(
+        EveNote, on_delete=models.CASCADE, related_name='comment')
     added_by = models.CharField(max_length=500)
     comment = models.TextField()
     comment_date = models.DateTimeField(auto_now_add=True)
     restricted = models.BooleanField(default=False)
+    ultra_restricted = models.BooleanField(default=False)
 
     def __str__(self):
-        return "Comment on: {} added by: {}".format(self.eve_note.eve_name, self.added_by)
+        return f"Comment on: {self.eve_note.eve_name} added by: {self.added_by}"
 
     class Meta:
         permissions = (
             # View
             ('view_eve_note_comments', 'Can view eve note comments'),
-            ('view_eve_note_restricted_comments', 'Can view restricted eve note comments'),
+            ('view_eve_note_restricted_comments',
+             'Can view restricted eve note comments'),
+            ('view_eve_note_ultra_restricted_comments',
+             'Can view ultra restricted eve note comments'),
             # Add
             ('add_new_eve_note_comments', 'Can add comments on eve notes'),
-            ('add_new_eve_note_restricted_comments', 'Can add new restricted comments to eve notes'),
+            ('add_new_eve_note_restricted_comments',
+             'Can add new restricted comments to eve notes'),
+            ('add_new_eve_note_ultra_restricted_comments',
+             'Can add new ultra restricted comments to eve notes'),
         )
 
 
@@ -105,17 +121,25 @@ class BlacklistFilter(FilterBase):
                                                   eve_catagory='corporation').values('eve_id')
         blacklisted_alli = EveNote.objects.filter(blacklisted=True,
                                                   eve_catagory='alliance').values('eve_id')
-        co = CharacterOwnership.objects.filter((
-            Q(character__character_id__in=blacklisted_char) |
-            Q(character__corporation_id__in=blacklisted_corp) |
-            Q(character__alliance_id__in=blacklisted_alli)),
-            user__in=users).values('user__id', 'character__character_name')
+        co = CharacterOwnership.objects.filter(
+            (
+                Q(character__character_id__in=blacklisted_char) |
+                Q(character__corporation_id__in=blacklisted_corp) |
+                Q(character__alliance_id__in=blacklisted_alli)
+            ),
+            user__in=users
+        ).values(
+            'user__id',
+            'character__character_name'
+        )
 
         chars = defaultdict(list)
         for c in co:
             chars[c['user__id']].append(c['character__character_name'])
 
-        output = defaultdict(lambda: {"message": "", "check": True})
+        output = defaultdict(
+            lambda: {"message": "", "check": True}
+        )
         for c, char_list in chars.items():
             output[c] = {"message": ", ".join(char_list), "check": False}
         return output

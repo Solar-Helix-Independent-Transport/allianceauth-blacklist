@@ -2,91 +2,74 @@
 {% load i18n %}
 {% load blacklist_tags %}
 {% load humanize %}
-{% block tb_block %}
-    <br />
-    <h1 class="text-center">{% translate "Blacklist" %}</h1>
-    <div class="col-sm-offset-2 col-sm-8">
-        <div class="tab-pane in active" id="blacklist">
-            {% if blacklist %}
-                <div class="container col-xs-12">
-                    <table class="table table-striped" id="blacklist-table" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th class="text-center"></th>
-                                <th class="text-center">{% translate "Name" %}</th>
-                                <th>{% translate "Reason" %}</th>
-                                <th>{% translate "Category" %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for note in blacklist %}
-                                <tr>
-                                    <td class="text-center" style="vertical-align:middle;">
-                                        {% eve_logo note.eve_id note.eve_name note.eve_catagory 64 %}
-                                    </td>
-                                    <td class="text-center" style="vertical-align:middle;">
-                                        <p>
-                                            {{ note.eve_name }}
-                                            {% if note.eve_catagory == 'character' %}
-                                                <br />
-                                                <span class="label label-default">{{ note.corporation_name }}</span>
-                                                <br />
-                                                <span class="label label-default">{{ note.alliance_name }}</span>
-                                            {% endif %}
-                                        </p>
-                                    </td>
-                                    <td style="vertical-align:middle;">
-                                        <p style="white-space: pre-wrap;
-                                                  white-space: -moz-pre-wrap;
-                                                  white-space: -pre-wrap;
-                                                  white-space: -o-pre-wrap;
-                                                  word-wrap: break-word">
-                                            {% if note.restricted %}
-                                                {% translate "Restricted Content! Contact" %} {{ note.added_by }}
-                                            {% else %}
-                                                {{ note.reason }}
-                                            {% endif %}
-                                        </p>
-                                    </td>
 
-                                    <!-- for filtering -->
-                                    <td class="text-center" style="vertical-align:middle;">{{ note.eve_catagory }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <div class="alert alert-warning text-center">
-                    {% translate "No one is yet to be Blacklisted. You guys are so nice!" %}
-                </div>
-            {% endif %}
-        </div>
+{% block header_nav_brand %}
+    {% translate "Blacklist" %}
+{% endblock %}
+
+{% block tb_block %}
+    <div id="blacklist">
+        {% if blacklist %}
+            <table class="table table-striped" id="blacklist-table" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>{% translate "Name" %}</th>
+                        <th>{% translate "Reason" %}</th>
+                        <th>{% translate "Category" %}</th>
+                    </tr>
+                </thead>
+            </table>
+        {% else %}
+            <div class="alert alert-warning text-center">
+                {% translate "No one is yet to be Blacklisted. You guys are so nice!" %}
+            </div>
+        {% endif %}
     </div>
 {% endblock tb_block %}
-{% block extra_javascript %}
-    {% include "bundles/datatables-js.html" %}
-{% endblock extra_javascript %}
-{% block extra_script %}
-    $(document).ready(function() {
-    $('#blacklist-table').DataTable({
-    "filterDropDown": {
-    columns: [{
-    idx: 3
-    }],
-    bootstrap: true
-    },
-    "columnDefs": [
-    { "searchable": false, "targets": [0] },
-    { "sortable": false, "targets": [0,2] },
-    { "visible": false, "targets": [3] }
 
-    ],
-    "order": [
-    [1, "asc"]
-    ],
-    "pageLength": 25,
-    "responsive" : true
-    });
-    });
-{% endblock extra_script %}
+{% block extra_javascript %}
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/columncontrol/1.2.0/js/dataTables.columnControl.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#blacklist-table').DataTable({
+                serverSide: true,
+                ajax: '/blacklist/tables/blacklist_table',
+                columnDefs: [
+                    {
+                        targets: 0,
+                        columnControl: [],
+                        sortable: false,
+                        searchable: false
+
+                    },
+                    {
+                        targets: [1,2,3],
+                        columnControl: [
+                            {
+                                target: 0,
+                                content: []
+                            },
+                            {
+                                target: 1,
+                                content: ['search']
+                            }
+                        ],
+                    },
+                ],
+                order: [
+                    [1, "asc"]
+                ],
+                pageLength: 10,
+                responsive : true
+            });
+        });
+    </script>
+{% endblock extra_javascript %}
+{% block extra_css %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.bootstrap5.css" />
+    <link href="https://cdn.datatables.net/columncontrol/1.2.0/css/columnControl.bootstrap5.min.css" rel="stylesheet">
+
+{% endblock %}
