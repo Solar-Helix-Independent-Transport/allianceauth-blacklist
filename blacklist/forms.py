@@ -38,3 +38,8 @@ class AddComment(forms.Form):
         required=False,
         widget=forms.CheckboxInput()
     )
+    ultra_restricted = forms.BooleanField(
+        label='Ultra Restricted',
+        required=False,
+        widget=forms.CheckboxInput()
+    )

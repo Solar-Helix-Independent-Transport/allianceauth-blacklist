@@ -124,17 +124,20 @@ def blacklist(request):
 def get_evenote_comments(request, evenote_id=None):
     view_restricted = request.user.has_perm(
         'blacklist.view_eve_note_restricted_comments')
+    view_ultra_restricted = request.user.has_perm(
+        'blacklist.view_eve_note_ultra_restricted_comments')
     comments = EveNote.objects.prefetch_related(
         'comment').get(id=evenote_id).comment.all()
     if not view_restricted:
         comments = comments.filter(restricted=False)
+    if not view_ultra_restricted:
+        comments = comments.filter(ultra_restricted=False)
     ctx = {
         'comments': comments,
-        'add_blacklist': request.user.has_perm('blacklist.add_to_blacklist'),
-        'add_restricted_note': request.user.has_perm('blacklist.add_restricted_eve_notes')
-
     }
-    return HttpResponse(render_to_string('blacklist/modal_comments.html', ctx, request=request))
+    out = render_to_string(
+        'blacklist/modal_comments.html', ctx, request=request)
+    return HttpResponse(out)
 
 
 @login_required
@@ -156,6 +159,7 @@ def get_add_comment(request, evenote_id=None):
     note = EveNote.objects.get(id=evenote_id)
     ctx = {
         'note': note,
+        'form': AddComment(),
         'add_restricted_note': request.user.has_perm('blacklist.add_new_eve_note_restricted_comments')
 
     }
@@ -259,7 +263,11 @@ def search_names(request):
     add_global_perms = request.user.has_perm('blacklist.add_new_eve_notes')
     add_blacklist_perms = request.user.has_perm('blacklist.add_to_blacklist')
     add_restricted_perms = request.user.has_perm(
-        'blacklist.add_restricted_eve_notes')
+        'blacklist.add_restricted_eve_notes'
+    )
+    add_ultra_restricted_perms = request.user.has_perm(
+        'blacklist.add_ultra_restricted_eve_notes'
+    )
 
     if not (add_perms or add_global_perms):
         messages.info(request, "No Permissions")
@@ -309,13 +317,14 @@ def search_names(request):
             searched = name
         except Exception as e:
             logger.error(e)
-            message: Any = e.message
+            # message: Any = e
 
     context = {
         'names': names,
         'searched': searched,
         'message': message,
-        'restricted_perms': add_restricted_perms
+        'restricted_perms': add_restricted_perms,
+        'ultra_restricted_perms': add_ultra_restricted_perms
     }
     return HttpResponse(
         content=render_to_string(
@@ -335,11 +344,13 @@ def add_comment(request, note_id=None):
         # check whether it's valid:
         if form.is_valid():
             restricted = form.cleaned_data['restricted']
+            ultra_restricted = form.cleaned_data['ultra_restricted']
             EveNoteComment.objects.create(
                 added_by=request.user.profile.main_character.character_name,
                 eve_note_id=note_id,
                 comment=form.cleaned_data['comment'],
-                restricted=restricted
+                restricted=restricted,
+                ultra_restricted=ultra_restricted
             )
             messages.info(request, "Comment Added")
             return redirect('blacklist:note_board')
@@ -349,9 +360,6 @@ def add_comment(request, note_id=None):
         context = {
             'form': form,
             'note': note,
-            'add_restricted': request.user.has_perm(
-                'blacklist.add_new_eve_note_restricted_comments'
-            )
         }
 
         return render(request, 'blacklist/add_comment.html', context)
@@ -486,24 +494,12 @@ class BlacklistTable(DataTablesView):
     columns = [
         ("", "blacklist/stubs/img.html"),
         ("eve_name", "blacklist/stubs/name.html"),
-        ("reason", """
-        {% load i18n %}
-        {% if row.restricted %}
-            {% translate "Restricted Content! Contact" %} {{ row.added_by }}
-        {% else %}
-            {{ row.reason }}
-        {% endif %}"""),
-        ("eve_catagory", "{{ row.eve_catagory }}"),
-        ("eve_id", "{{ row.eve_id }}"),
+        ("reason", "blacklist/stubs/reason_blacklist.html"),
+        ("eve_catagory", "{{ row.eve_catagory }}")
     ]
 
     def get_model_qs(self, request: HttpRequest, *args, **kwargs):
         qs = super().get_model_qs(request, *args, **kwargs).filter(blacklisted=True)
-        # prevent access to hidden stuffs
-        if not request.user.has_perm("blacklist.view_restricted_eve_notes"):
-            qs = qs.filter(restricted=False)
-        if not request.user.has_perm("blacklist.view_ultra_restricted_eve_notes"):
-            qs = qs.filter(ultra_restricted=False)
         return qs
 
 
@@ -520,3 +516,12 @@ class EveNoteTable(DataTablesView):
         ("alliance_name", "{{ row.alliance_name }}"),
         ("", "blacklist/stubs/actions.html")
     ]
+
+    def get_model_qs(self, request: HttpRequest, *args, **kwargs):
+        qs = super().get_model_qs(request, *args, **kwargs)
+        # prevent access to hidden stuffs
+        if not request.user.has_perm("blacklist.view_restricted_eve_notes"):
+            qs = qs.filter(restricted=False)
+        if not request.user.has_perm("blacklist.view_ultra_restricted_eve_notes"):
+            qs = qs.filter(ultra_restricted=False)
+        return qs

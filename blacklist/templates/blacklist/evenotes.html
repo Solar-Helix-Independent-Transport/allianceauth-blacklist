@@ -279,6 +279,29 @@
                             'click',
                             function() {
                                 console.log("COMMENT", this.id)
+                                updateModal(
+                                    `Fetching Comments`,
+                                    loaderSpinner
+                                )
+                                searchModal.show();
+                                fetch(
+                                    replaceIDInURL(modal_comment_url, this.id),
+                                    {
+                                        headers: {
+                                            'X-CSRFToken': token,
+                                        },
+                                        method:"POST",
+                                    }
+                                ).then(
+                                    response => {return response.text()}
+                                ).then( text => {
+                                        updateModal(
+                                            "Comments",
+                                            text
+                                        )
+                                    }
+                                );
+
                             },
                             false
                         );
@@ -289,6 +312,28 @@
                             'click',
                             function() {
                                 console.log("ADD COMMENT", this.id)
+                                updateModal(
+                                    `Fetching Comments`,
+                                    loaderSpinner
+                                )
+                                searchModal.show();
+                                fetch(
+                                    replaceIDInURL(modal_add_comment_url, this.id),
+                                    {
+                                        headers: {
+                                            'X-CSRFToken': token,
+                                        },
+                                        method:"POST",
+                                    }
+                                ).then(
+                                    response => {return response.text()}
+                                ).then( text => {
+                                        updateModal(
+                                            "Comments",
+                                            text
+                                        )
+                                    }
+                                );
                             },
                             false
                         );

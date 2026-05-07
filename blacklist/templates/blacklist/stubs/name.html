@@ -11,6 +11,9 @@
 {% if row.blacklisted %}
     <span class="badge text-bg-danger">{% translate "BLACKLISTED" %}</span>
 {% endif %}
-{% if row.restricted %}
+{% if row.restricted and not row.ultra_restricted %}
     <span class="badge text-bg-danger">{% translate "RESTRICTED" %}</span>
+{% endif %}
+{% if row.ultra_restricted %}
+    <span class="badge text-bg-warning">{% translate "ULTRA RESTRICTED" %}</span>
 {% endif %}

@@ -44,19 +44,19 @@
         {% endif %}
         {{ form.reason.errors }}
         {% bootstrap_field form.reason %}
-        {% if add_restricted_note %}
+        {% if perms.blacklist.add_restricted_eve_notes %}
             {{ form.restricted.errors }}
             <span class="text-warning">
                 {% bootstrap_field form.restricted %}
             </span>
         {% endif %}
-        {% if add_ultra_restricted_note %}
+        {% if perms.blacklist.add_ultra_restricted_eve_notes %}
             {{ form.ultra_restricted.errors }}
             <span class="text-warning">
                 {% bootstrap_field form.ultra_restricted %}
             </span>
         {% endif %}
-        {% if add_blacklist %}
+        {% if perms.blacklist.add_to_blacklist %}
             {{ form.blacklisted.errors }}
             <span class="text-danger">
                 {% bootstrap_field form.blacklisted %}

@@ -4,7 +4,8 @@
     {% if forloop.first %}{% endif %}
     <p class="text-center">
         <b>{{ comment.added_by }}</b> ({{ comment.comment_date|naturaltime }})
-        {% if comment.restricted %}<span class="label label-warning fas fa-shield-alt" title="Restricted"></span>{% endif %}
+        {% if comment.restricted %}<span class="label text-warning fas fa-shield-alt" title="Restricted"></span>{% endif %}
+        {% if comment.ultra_restricted %}<span class="label text-danger fas fa-shield-alt" title="Ultra Restricted"></span>{% endif %}
     </p>
     <p class="text-center"
        style="white-space: pre-wrap; word-wrap: break-word">{{ comment.comment }}</p>

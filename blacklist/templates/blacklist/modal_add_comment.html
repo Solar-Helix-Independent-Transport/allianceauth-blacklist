@@ -1,39 +1,42 @@
 {% load i18n %}
 {% load blacklist_tags %}
+{% load django_bootstrap5 %}
+
 <div class="clearfix">
     {% if note.eve_catagory == 'character' %}
-        <div class="text-center col-md-6">
+        <div class="text-center">
             <div class="text-center">
                 {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
                 <h4>{{ note.eve_name }}</h4>
             </div>
         </div>
     {% else %}
-        <div class="text-center col-md-6">
+        <div class="text-center">
             <div class="text-center">
                 {% eve_logo note.eve_id note.eve_name note.eve_catagory 128 %}
                 <h4>{{ note.eve_name }}</h4>
             </div>
         </div>
     {% endif %}
-    <div class="col-md-6">
+    <div>
         <form action="/blacklist/add_comment/{{ note.id }}/" method="post">
             {% csrf_token %}
             <input type="hidden" name="note_id" value="{{ note.id }}" />
-            {% if add_restricted_note %}
-                <h4 class="text-center">
-                    <span class="label label-warning">
-                        <label for="id_restricted">{% translate "Restricted:" %}</label>
-                        <input type="checkbox" name="restricted" class="form-check" id="id_restricted" />
-                    </span>
-                </h4>
+            {{ form.comment.errors }}
+            {% bootstrap_field form.comment %}
+            {% if perms.blacklist.add_new_eve_note_restricted_comments %}
+                {{ form.restricted.errors }}
+                <span class="text-warning">
+                    {% bootstrap_field form.restricted %}
+                </span>
             {% endif %}
-            <p>
-                <label for="id_comment">{% translate "Comment:" %}</label>
-                <textarea name="comment" cols="40" rows="10" class="form-control" required="" id="id_comment"></textarea>
-            </p>
-
-            <input type="submit" class="btn btn-primary col-md-12 modal-add-comment-success" />
+            {% if perms.blacklist.add_new_eve_note_ultra_restricted_comments %}
+                {{ form.ultra_restricted.errors }}
+                <span class="text-warning">
+                    {% bootstrap_field form.ultra_restricted %}
+                </span>
+            {% endif %}
+            <input type="submit" value="Submit" class="btn w-100 btn-primary" />
         </form>
     </div>
 </div>
