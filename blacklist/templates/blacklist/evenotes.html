@@ -10,18 +10,31 @@
 {% block header_nav_collapse_right %}
     <li>
         {% if add_note %}
-            <a id="add-new"
-               class="btn btn-success "
-               type="button"
-               title="Add New"
-               data-bs-toggle="modal"
-               data-bs-target="#modal-main">{% translate "Add New" %}</a>
+            <li class="nav-item">
+                <a
+                    id="add-new"
+                    href="{{ url }}"
+                    class="nav-link py-lg-0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal-main">
+                    <span class="btn btn-success d-none d-lg-inline-block">
+                        <i class="fas fa-plus me-2"></i>
+                        {% translate "Add New" %}
+                    </span>
+                    <span class="d-inline-block d-lg-none">
+                        <i class="fas fa-plus me-2"></i>
+                        {% translate "Add New" %}
+                    </span>
+                </a>
+            </li>
+
+
         {% endif %}
 
         {% if search_char %}
-            <a class="btn btn-secondary" type="button" title="Set Char" href="/blacklist/set/">{{ search_char.character_name }}</a>
+            {% include "framework/header/nav-collapse-button.html" with btn_modifier="secondary" url="/blacklist/set/" title=search_char.character_name %}
         {% else %}
-            <a class="btn btn-warning" type="button" title="Set Char" href="/blacklist/set/">{% translate "Select Search Char!" %}</a>
+            {% include "framework/header/nav-collapse-button.html" with btn_modifier="warning" url="/blacklist/set/" title="Select Search Char!" %}
         {% endif %}
     </li>
 {% endblock %}
