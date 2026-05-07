@@ -4,20 +4,16 @@
 
 <p class="text-center">{% translate "Please ensure the details below are correct!" %}</p>
 {% if name.category == 'character' %}
-    <div class="d-flex flex-row">
-        <div class="text-center h-100">
+    <div class="d-flex flex-row align-items-center justify-content-center">
+        <div class="text-center h-100 m-3">
             {% eve_logo name.id name.name name.category 128 %}
-            <h4>{{ name.name }}</h4>
+            <h3>{{ name.name }}</h3>
         </div>
-        <div class="d-flex flex-column">
-            <div>
-                {% eve_logo char_info.corporation_id corp_info.name "corporation" 64 %}
-                <h5>{{ corp_info.name }}</h5>
-            </div>
-            <div>
-                {% eve_logo corp_info.alliance_id alliance_info.name "alliance" 64 %}
-                <h5>{{ alliance_info.name }}</h5>
-            </div>
+        <div class="d-flex flex-column align-items-center justify-content-center m-3">
+            {% eve_logo char_info.corporation_id corp_info.name "corporation" 64 %}
+            <h5>{{ corp_info.name }}</h5>
+            {% eve_logo corp_info.alliance_id alliance_info.name "alliance" 64 %}
+            <h5>{{ alliance_info.name }}</h5>
         </div>
     </div>
 {% else %}
