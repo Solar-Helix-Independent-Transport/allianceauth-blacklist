@@ -35,6 +35,8 @@
     <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.3.6/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdn.datatables.net/columncontrol/1.2.0/js/dataTables.columnControl.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.8/js/dataTables.responsive.min.js" integrity="sha384-jp1JS4vMvRmld4ZK9Co4AZftrm1tt3FbEZrCdFZIcoRiazQGkTqOS1QqI060oG2F" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.8/js/responsive.bootstrap5.js" integrity="sha384-hyp/YDWGBMFqg7pJuS+y+2VWJkwnOyX+oMN9fWcxINo2flqjC/SdNaHj8LIV4zKJ" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
             $('#blacklist-table').DataTable({
@@ -61,6 +63,8 @@
                             }
                         ],
                     },
+                    { responsivePriority: 1, targets: [1, 2] },
+                    { responsivePriority: 99999999, targets: [0] },
                 ],
                 order: [
                     [1, "asc"]
@@ -74,5 +78,5 @@
 {% block extra_css %}
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.bootstrap5.css" />
     <link href="https://cdn.datatables.net/columncontrol/1.2.0/css/columnControl.bootstrap5.min.css" rel="stylesheet">
-
+    <link href="https://cdn.datatables.net/responsive/3.0.8/css/responsive.bootstrap5.min.css" rel="stylesheet" integrity="sha384-seyUnB//1QOFEqox9uI7YTLBgz9jBwFRqZvsEPFrTw6NAsFEo70nhBWsQfODqiYA" crossorigin="anonymous">
 {% endblock %}
