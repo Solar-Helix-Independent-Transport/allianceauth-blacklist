@@ -258,7 +258,7 @@
                 ajax: "{% url 'blacklist:evenote_table' %}",
                 columnDefs: [
                     {
-                        targets: [0,2],
+                        targets: [0],
                         columnControl: [],
                         sortable: false,
                         searchable: false
@@ -277,14 +277,14 @@
                             }
                         ],
                     },
-                    { searchable: false, targets: [0] },
+                    { searchable: false, targets: [0, 2] },
                     { sortable: false, targets: [0, 4, 8] },
                     { visible: false, targets: [5, 6, 7] },
-                    { responsivePriority: 1, targets: [ 1, 4, 8, ] },
+                    { responsivePriority: 1, targets: [ 1, 2, 4, 8, ] },
                     { responsivePriority: 99999999, targets: [ 0, ] }
                 ],
                 order: [
-                    [1, "asc"]
+                    [2, "desc"]
                 ],
                 pageLength: 10,
                 responsive: true,
