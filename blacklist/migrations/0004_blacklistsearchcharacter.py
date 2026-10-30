@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('eveonline', '0016_character_names_are_not_unique'),
+        ('eveonline', '0019_v5squash'),
         ('blacklist', '0003_alter_evenote_eve_catagory'),
     ]
 
